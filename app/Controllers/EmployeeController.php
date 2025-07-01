@@ -35,16 +35,12 @@ class EmployeeController extends Controller
 
     public function getAllEmployees()
     {
-        $page = $this->request->getVar('page') ?? 1;
-        $perPage = 10;
-        
-        $result = $this->employeeModel->getEmployees($page, $perPage);
+        $search = $this->request->getVar('search');
+        $result = $this->employeeModel->getAllEmployees($search);
         
         return $this->response->setJSON([
             'data' => $result['data'],
-            'totalRows' => $result['totalRows'],
-            'currentPage' => $result['currentPage'],
-            'perPage' => $result['perPage']
+            'totalRows' => $result['totalRows']
         ]);
     }
 

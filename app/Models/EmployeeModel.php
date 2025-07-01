@@ -33,37 +33,38 @@ class EmployeeModel extends Model
         }
     }
 
-    public function getEmployees($page = 1, $perPage = 10)
+    public function getAllEmployees($search = null)
     {
         try {
             // Verify table exists
-            $this->db->table($this->table)->countAllResults();
+            $this->db->table($this->table)->select('id')->get();
             
             // Build query step by step with error checking
             $builder = $this->builder();
             
-            // Test select query
-            $testSelect = $builder->select('id')->get();
-            if ($testSelect === false) {
-                throw new \Exception('Failed to execute select query');
+            // Add search functionality
+            if ($search) {
+                $builder->groupStart()
+                    ->like('emp_name', $search)
+                    ->orLike('emp_id', $search)
+                    ->orLike('email', $search)
+                    ->orLike('phone', $search)
+                    ->orLike('department', $search)
+                    ->groupEnd();
             }
             
             // Get total rows
-            $totalRows = $builder->countAllResults();
+            $totalRows = $builder->countAllResults(false);
             
-            // Calculate offset for pagination
-            $offset = ($page - 1) * $perPage;
-            
-            // Get employees with manual pagination
+            // Get all employees
             $employees = $builder
                 ->select('id, emp_name, emp_id, joining_date, created_at, is_active')
                 ->orderBy('created_at', 'DESC')
-                ->limit($perPage, $offset)
                 ->get()
                 ->getResultArray();
 
             if (empty($employees)) {
-                throw new \Exception('No employees found for this page');
+                throw new \Exception('No employees found');
             }
 
             // Convert 'yes'/'no' to boolean for frontend
@@ -74,13 +75,10 @@ class EmployeeModel extends Model
 
             return [
                 'data' => $employees,
-                'totalRows' => $totalRows,
-                'currentPage' => $page,
-                'perPage' => $perPage,
-                'totalPages' => ceil($totalRows / $perPage)
+                'totalRows' => $totalRows
             ];
         } catch (\Exception $e) {
-            log_message('error', 'Error in getEmployees: ' . $e->getMessage());
+            log_message('error', 'Error in getAllEmployees: ' . $e->getMessage());
             log_message('error', 'Stack trace: ' . $e->getTraceAsString());
             
             // Return error response

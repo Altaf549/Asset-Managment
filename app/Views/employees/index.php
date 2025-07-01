@@ -125,28 +125,18 @@
     $(document).ready(function() {
         initializeTable();
         loadEmployees();
-
-        // Add custom pagination controls
-        $(document).on('click', '.page-link', function(e) {
-            e.preventDefault();
-            const page = $(this).data('page');
-            if (page) {
-                currentPage = parseInt(page);
-                loadEmployees();
-            }
-        });
     });
 
     function initializeTable() {
         if (initialized) return;
         
         employeeTable = $('#employeeTable').DataTable({
-            pageLength: 10,
+            pageLength: 10, // Show all records
             lengthChange: false,
-            searching: false,
-            ordering: false,
+            searching: true,
+            ordering: true,
             info: true,
-            paging: false, // Disable DataTables pagination
+            paging: true, // Disable pagination
             language: {
                 paginate: {
                     previous: '<i class="fas fa-chevron-left">',
@@ -155,12 +145,8 @@
             },
             initComplete: function() {
                 initialized = true;
-                
-                // Add custom pagination buttons
-                $('<div class="pagination mt-3" id="customPagination"></div>').insertAfter('#employeeTable');
-                
-                // Initialize pagination controls
-                updatePaginationControls();
+                // Remove any custom pagination container if it exists
+                $('#customPagination').remove();
             }
         });
     }
@@ -169,15 +155,9 @@
         $.ajax({
             url: '<?= base_url('admin/employee/getAllEmployees') ?>',
             method: 'GET',
-            data: { page: currentPage },
             success: function(response) {
-                totalPages = Math.ceil(response.totalRows / response.perPage);
-                
-                // Update pagination controls
-                updatePaginationControls();
-                
                 // Clear table body
-                $('#employeeTable tbody').empty();
+                employeeTable.clear();
                 
                 // Update the table with new data
                 response.data.forEach((employee, index) => {
@@ -201,19 +181,17 @@
                         </button>
                     `;
 
-                    const row = `
-                        <tr>
-                            <td>${(currentPage - 1) * 10 + index + 1}</td>
-                            <td>${employee.emp_name}</td>
-                            <td>${employee.emp_id}</td>
-                            <td>${formatDate(employee.joining_date).toLocaleString()}</td>
-                            <td>${formatDate(employee.created_at).toLocaleString()}</td>
-                            <td>${statusToggle}</td>
-                            <td>${actions}</td>
-                        </tr>
-                    `;
-                    $('#employeeTable tbody').append(row);
+                    employeeTable.row.add([
+                        index + 1, // Use sequential index as SL No.
+                        employee.emp_name,
+                        employee.emp_id,
+                        formatDate(employee.joining_date).toLocaleString(),
+                        formatDate(employee.created_at).toLocaleString(),
+                        statusToggle,
+                        actions
+                    ]);
                 });
+                employeeTable.draw();
             }
         });
     }
@@ -313,73 +291,7 @@
         return date.toLocaleDateString();
     }
 
-    // Handle pagination manually
-    $(document).on('click', '.paginate_button', function() {
-        currentPage = $(this).data('start') / 10 + 1;
-        loadEmployees();
-    });
-    function updatePaginationControls() {
-        const $pagination = $('#customPagination');
-        $pagination.empty();
-        
-        // Create pagination controls
-        const createPaginationItem = (page, text, disabled = false, active = false) => {
-            const $item = $('<div>').addClass('page-item');
-            if (disabled) $item.addClass('disabled');
-            if (active) $item.addClass('active');
-            
-            const $link = $('<a>')
-                .addClass('page-link')
-                .attr('href', '#')
-                .data('page', page)
-                .text(text);
-            
-            $item.append($link);
-            return $item;
-        };
 
-        // Previous button
-        $pagination.append(createPaginationItem(
-            currentPage > 1 ? currentPage - 1 : null,
-            'Previous',
-            currentPage <= 1
-        ));
-
-        // Page numbers
-        const visiblePages = 5;
-        const startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
-        const endPage = Math.min(totalPages, startPage + visiblePages - 1);
-
-        if (startPage > 1) {
-            $pagination.append(createPaginationItem(1, '1'));
-            if (startPage > 2) {
-                $pagination.append(createPaginationItem(null, '...'));
-            }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            $pagination.append(createPaginationItem(
-                i,
-                i.toString(),
-                false,
-                i === currentPage
-            ));
-        }
-
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                $pagination.append(createPaginationItem(null, '...'));
-            }
-            $pagination.append(createPaginationItem(totalPages, totalPages.toString()));
-        }
-
-        // Next button
-        $pagination.append(createPaginationItem(
-            currentPage < totalPages ? currentPage + 1 : null,
-            'Next',
-            currentPage >= totalPages
-        ));
-    }
 
     </script>
 </body>
