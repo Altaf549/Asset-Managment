@@ -7,6 +7,10 @@
             <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
 
+        <a class="nav-link <?php echo $page === 'employee' ? 'active' : ''; ?>" href="<?= site_url('admin/employee') ?>">
+            <i class="bi bi-speedometer2 me-2"></i> Employee
+        </a>
+
         <div class="nav-item mb-3">
             <a class="nav-link <?php 
                 $settingsPages = ['assigned-laptop', 'Unassigned-laptop'];
