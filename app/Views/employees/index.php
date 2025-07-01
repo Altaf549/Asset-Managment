@@ -201,6 +201,8 @@
         $('#emp_name').val('');
         $('#emp_id').val('');
         $('#isActive').prop('checked', true);
+        $('#joining_date').val('');
+        $('#joining_date').attr('max', getTodayDate());
         $('#employeeModal').modal('show');
     }
 
@@ -213,6 +215,7 @@
                 $('#emp_name').val(employee.emp_name);
                 $('#emp_id').val(employee.emp_id);
                 $('#joining_date').val(employee.joining_date);
+                $('#joining_date').attr('max', getTodayDate());
                 $('#isActive').prop('checked', employee.isActive);
                 $('#employeeModal').modal('show');
             }
@@ -289,6 +292,11 @@
             return dateString;
         }
         return date.toLocaleDateString();
+    }
+
+    function getTodayDate() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
     }
 
 
