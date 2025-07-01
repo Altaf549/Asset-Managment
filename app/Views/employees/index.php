@@ -21,6 +21,14 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .table {
+            min-width: 100%;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -37,12 +45,15 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <table id="employeeTable" class="table table-striped">
+                        <div class="table-container">
+                            <table id="employeeTable" class="table table-striped">
                             <thead>
                                 <tr>
+                                    <th>SL No.</th>
                                     <th>Employee Name</th>
                                     <th>Employee ID</th>
                                     <th>Joining Date</th>
+                                    <th>Create Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -50,6 +61,7 @@
                             <tbody>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -108,7 +120,7 @@
                 // Clear table body
                 $('#employeeTable tbody').empty();
                 
-                response.data.forEach(employee => {
+                response.data.forEach((employee, index) => {
                     const statusToggle = `
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" 
@@ -131,9 +143,11 @@
 
                     const row = `
                         <tr>
+                            <td>${(currentPage - 1) * 10 + index + 1}</td>
                             <td>${employee.emp_name}</td>
                             <td>${employee.emp_id}</td>
-                            <td>${new Date(employee.created_at).toLocaleString()}</td>
+                            <td>${formatDate(employee.joining_date).toLocaleString()}</td>
+                            <td>${formatDate(employee.created_at).toLocaleString()}</td>
                             <td>${statusToggle}</td>
                             <td>${actions}</td>
                         </tr>
@@ -160,6 +174,7 @@
                 $('#employeeId').val(employee.id);
                 $('#emp_name').val(employee.emp_name);
                 $('#emp_id').val(employee.emp_id);
+                $('#joining_date').val(employee.joining_date);
                 $('#isActive').prop('checked', employee.isActive);
                 $('#employeeModal').modal('show');
             }
@@ -170,6 +185,7 @@
         const data = {
             emp_name: $('#emp_name').val(),
             emp_id: $('#emp_id').val(),
+            joining_date: $('#joining_date').val(),
             isActive: $('#isActive').is(':checked') ? 'yes' : 'no'
         };
 
@@ -221,6 +237,20 @@
                 }
             });
         }
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        if (date.toString() === 'Invalid Date') {
+            // Handle MySQL date format (YYYY-MM-DD)
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateString;
+        }
+        return date.toLocaleDateString();
     }
 
     // Handle pagination manually

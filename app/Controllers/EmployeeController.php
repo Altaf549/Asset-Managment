@@ -28,6 +28,7 @@ class EmployeeController extends Controller
 
         // Convert database 'yes'/'no' to boolean for frontend
         $employee['isActive'] = $employee['is_active'] === 'yes';
+        $employee['joining_date'] = $employee['joining_date'] ?? date('Y-m-d');
         
         return $this->response->setJSON($employee);
     }
@@ -52,7 +53,8 @@ class EmployeeController extends Controller
         $data = [
             'emp_name' => $this->request->getPost('emp_name'),
             'emp_id' => $this->request->getPost('emp_id'),
-            'isActive' => $this->request->getPost('isActive') ?? 1
+            'joining_date' => $this->request->getPost('joining_date'),
+            'is_active' => $this->request->getPost('isActive') === 'yes' ? 'yes' : 'no'
         ];
 
         $result = $this->employeeModel->createEmployee($data);
@@ -69,6 +71,7 @@ class EmployeeController extends Controller
         $data = [
             'emp_name' => $this->request->getPost('emp_name'),
             'emp_id' => $this->request->getPost('emp_id'),
+            'joining_date' => $this->request->getPost('joining_date'),
             'is_active' => $this->request->getPost('isActive')
         ];
         $result = $this->employeeModel->updateEmployee($id, $data);

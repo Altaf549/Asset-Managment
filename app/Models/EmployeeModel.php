@@ -11,7 +11,7 @@ class EmployeeModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['emp_name', 'emp_id', 'created_at', 'updated_at', 'is_active'];
+    protected $allowedFields = ['emp_name', 'emp_id', 'joining_date', 'created_at', 'updated_at', 'is_active'];
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
@@ -56,7 +56,7 @@ class EmployeeModel extends Model
             
             // Get employees with manual pagination
             $employees = $builder
-                ->select('id, emp_name, emp_id, created_at, is_active')
+                ->select('id, emp_name, emp_id, joining_date, created_at, is_active')
                 ->orderBy('created_at', 'DESC')
                 ->limit($perPage, $offset)
                 ->get()
@@ -69,6 +69,7 @@ class EmployeeModel extends Model
             // Convert 'yes'/'no' to boolean for frontend
             foreach ($employees as &$employee) {
                 $employee['isActive'] = $employee['is_active'] === 'yes';
+                $employee['joining_date'] = $employee['joining_date'] ?? date('Y-m-d');
             }
 
             return [

@@ -18,6 +18,10 @@
                         <input type="text" class="form-control" id="emp_id" required>
                     </div>
                     <div class="mb-3">
+                        <label for="joining_date" class="form-label">Joining Date</label>
+                        <input type="date" class="form-control" id="joining_date" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="isActive" class="form-label">Status</label>
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="isActive" checked>
