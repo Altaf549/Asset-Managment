@@ -29,6 +29,46 @@
             min-width: 100%;
             white-space: nowrap;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+        .page-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: #495057;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .page-item.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+        .page-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-item:first-child,
+        .page-item:last-child {
+            width: 80px;
+            padding: 0 12px;
+        }
+        .page-item:first-child {
+            content: '←';
+        }
+        .page-item:last-child {
+            content: '→';
+        }
+        .page-item:hover:not(.disabled) {
+            background-color: #f8f9fa;
+        }
     </style>
 </head>
 <body>
@@ -85,6 +125,16 @@
     $(document).ready(function() {
         initializeTable();
         loadEmployees();
+
+        // Add custom pagination controls
+        $(document).on('click', '.page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            if (page) {
+                currentPage = parseInt(page);
+                loadEmployees();
+            }
+        });
     });
 
     function initializeTable() {
@@ -96,7 +146,7 @@
             searching: false,
             ordering: false,
             info: true,
-            paging: true,
+            paging: false, // Disable DataTables pagination
             language: {
                 paginate: {
                     previous: '<i class="fas fa-chevron-left">',
@@ -105,6 +155,12 @@
             },
             initComplete: function() {
                 initialized = true;
+                
+                // Add custom pagination buttons
+                $('<div class="pagination mt-3" id="customPagination"></div>').insertAfter('#employeeTable');
+                
+                // Initialize pagination controls
+                updatePaginationControls();
             }
         });
     }
@@ -117,9 +173,13 @@
             success: function(response) {
                 totalPages = Math.ceil(response.totalRows / response.perPage);
                 
+                // Update pagination controls
+                updatePaginationControls();
+                
                 // Clear table body
                 $('#employeeTable tbody').empty();
                 
+                // Update the table with new data
                 response.data.forEach((employee, index) => {
                     const statusToggle = `
                         <div class="form-check form-switch">
@@ -258,6 +318,69 @@
         currentPage = $(this).data('start') / 10 + 1;
         loadEmployees();
     });
+    function updatePaginationControls() {
+        const $pagination = $('#customPagination');
+        $pagination.empty();
+        
+        // Create pagination controls
+        const createPaginationItem = (page, text, disabled = false, active = false) => {
+            const $item = $('<div>').addClass('page-item');
+            if (disabled) $item.addClass('disabled');
+            if (active) $item.addClass('active');
+            
+            const $link = $('<a>')
+                .addClass('page-link')
+                .attr('href', '#')
+                .data('page', page)
+                .text(text);
+            
+            $item.append($link);
+            return $item;
+        };
+
+        // Previous button
+        $pagination.append(createPaginationItem(
+            currentPage > 1 ? currentPage - 1 : null,
+            'Previous',
+            currentPage <= 1
+        ));
+
+        // Page numbers
+        const visiblePages = 5;
+        const startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+        const endPage = Math.min(totalPages, startPage + visiblePages - 1);
+
+        if (startPage > 1) {
+            $pagination.append(createPaginationItem(1, '1'));
+            if (startPage > 2) {
+                $pagination.append(createPaginationItem(null, '...'));
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            $pagination.append(createPaginationItem(
+                i,
+                i.toString(),
+                false,
+                i === currentPage
+            ));
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                $pagination.append(createPaginationItem(null, '...'));
+            }
+            $pagination.append(createPaginationItem(totalPages, totalPages.toString()));
+        }
+
+        // Next button
+        $pagination.append(createPaginationItem(
+            currentPage < totalPages ? currentPage + 1 : null,
+            'Next',
+            currentPage >= totalPages
+        ));
+    }
+
     </script>
 </body>
 </html>
