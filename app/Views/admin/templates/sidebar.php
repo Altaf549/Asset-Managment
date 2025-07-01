@@ -305,6 +305,16 @@
 #assetMenu.is-open {
     max-height: 500px;
 }
+
+.sidebar {
+    height: calc(100vh); /* Full viewport height minus header height */
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    width: 250px;
+    padding: 1rem;
+}
+
 </style>
 
 <!-- Add custom JavaScript for settings menu -->
