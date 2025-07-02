@@ -152,6 +152,41 @@
         let currentPage = 1;
         let totalPages = 1;
         let initialized = false;
+        let employeesData = [];
+
+        // Function to update employee ID field
+        function updateEmployeeIdField(employeeId) {
+            $('#employeeId').val(employeeId || '');
+        }
+
+        // Initialize employee dropdown
+        function initializeEmployeeDropdown() {
+            const employeeSelect = $('#employeeName');
+            employeeSelect.empty().append('<option value="">Select Employee</option>');
+            
+            employeesData.forEach(employee => {
+                if (employee.is_active === 'yes') {
+                    employeeSelect.append(
+                        $('<option>', {
+                            value: employee.emp_id,
+                            text: employee.emp_name
+                        })
+                    );
+                }
+            });
+
+            employeeSelect.select2({
+                placeholder: "Select Employee",
+                dropdownParent: $('#assignModal'),
+                width: '100%'
+            });
+
+            // Update employee ID when selection changes
+            employeeSelect.on('change', function() {
+                const selectedEmployeeId = $(this).val();
+                updateEmployeeIdField(selectedEmployeeId);
+            });
+        }
 
         $(document).ready(function() {
             initializeTable();
@@ -205,23 +240,8 @@
                 url: '<?= base_url('admin/employee/getAllEmployees') ?>',
                 method: 'GET',
                 success: function(response) {
-                    response.data.forEach(employee => {
-                        if (employee.is_active === 'yes') {
-                            employeeSelect.append(
-                                $('<option>', {
-                                    value: employee.id,
-                                    text: employee.emp_name
-                                })
-                            );
-                        }
-                    });
-
-                    // ✅ Initialize Select2 after data loaded
-                    employeeSelect.select2({
-                        placeholder: "Select Employee",
-                        dropdownParent: $('#assignModal'),
-                        width: '100%'
-                    });
+                    employeesData = response.data;
+                    initializeEmployeeDropdown();
                 },
                 error: function() {
                     alert('Failed to load employees data');
