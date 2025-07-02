@@ -133,10 +133,16 @@
     <?= view('laptop/product/modal') ?>
     <?= view('laptop/product/assign_modal') ?>
 
+    <!-- jQuery (before Select2) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- Select2 CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
@@ -177,16 +183,30 @@
         }
 
         function openAssignModal() {
-            // Fetch employees data
+            const employeeSelect = $('#employeeName');
+            const assetSelect = $('#assetId');
+
+            // Reset both selects
+            employeeSelect.empty().append('<option value="">Select Employee</option>');
+            assetSelect.empty().append('<option value="">Select Asset</option>');
+
+            // Destroy Select2 if already initialized (to avoid duplicate UI)
+            if ($.fn.select2) {
+                if (employeeSelect.hasClass("select2-hidden-accessible")) {
+                    employeeSelect.select2('destroy');
+                }
+                if (assetSelect.hasClass("select2-hidden-accessible")) {
+                    assetSelect.select2('destroy');
+                }
+            }
+
+            // Fetch employee data
             $.ajax({
                 url: '<?= base_url('admin/employee/getAllEmployees') ?>',
                 method: 'GET',
                 success: function(response) {
-                    const employeeSelect = $('#employeeName');
-                    employeeSelect.empty();
-                    employeeSelect.append('<option value="">Select Employee</option>');
                     response.data.forEach(employee => {
-                        if (employee.is_active === 'yes') {  // Double check active status
+                        if (employee.is_active === 'yes') {
                             employeeSelect.append(
                                 $('<option>', {
                                     value: employee.id,
@@ -195,20 +215,24 @@
                             );
                         }
                     });
+
+                    // ✅ Initialize Select2 after data loaded
+                    employeeSelect.select2({
+                        placeholder: "Select Employee",
+                        dropdownParent: $('#assignModal'),
+                        width: '100%'
+                    });
                 },
                 error: function() {
                     alert('Failed to load employees data');
                 }
             });
-            
-            // Fetch assets data
+
+            // Fetch asset data
             $.ajax({
                 url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
                 method: 'GET',
                 success: function(response) {
-                    const assetSelect = $('#assetId');
-                    assetSelect.empty();
-                    assetSelect.append('<option value="">Select Asset</option>');
                     response.data.forEach(asset => {
                         assetSelect.append(
                             $('<option>', {
@@ -217,14 +241,24 @@
                             })
                         );
                     });
+
+                    // ✅ Initialize Select2 after data loaded
+                    assetSelect.select2({
+                        placeholder: "Select Asset",
+                        dropdownParent: $('#assignModal'),
+                        width: '100%'
+                    });
                 },
                 error: function() {
                     alert('Failed to load assets data');
                 }
             });
-            
-            $('#assignModal').modal('show');
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+            modal.show();
         }
+
 
         function loadLaptops() {
             $.ajax({
