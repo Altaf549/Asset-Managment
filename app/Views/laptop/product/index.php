@@ -176,6 +176,52 @@
     }
 
     function openAssignModal() {
+        // Fetch employees data
+        $.ajax({
+            url: '<?= base_url('admin/employee/getAllEmployees') ?>',
+            method: 'GET',
+            success: function(response) {
+                const employeeSelect = $('#employeeName');
+                employeeSelect.empty();
+                employeeSelect.append('<option value="">Select Employee</option>');
+                response.data.forEach(employee => {
+                    if (employee.is_active === 'yes') {  // Double check active status
+                        employeeSelect.append(
+                            $('<option>', {
+                                value: employee.id,
+                                text: employee.emp_name
+                            })
+                        );
+                    }
+                });
+            },
+            error: function() {
+                alert('Failed to load employees data');
+            }
+        });
+        
+        // Fetch assets data
+        $.ajax({
+            url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
+            method: 'GET',
+            success: function(response) {
+                const assetSelect = $('#assetId');
+                assetSelect.empty();
+                assetSelect.append('<option value="">Select Asset</option>');
+                response.data.forEach(asset => {
+                    assetSelect.append(
+                        $('<option>', {
+                            value: asset.id,
+                            text: asset.asset_id
+                        })
+                    );
+                });
+            },
+            error: function() {
+                alert('Failed to load assets data');
+            }
+        });
+        
         $('#assignModal').modal('show');
     }
 
