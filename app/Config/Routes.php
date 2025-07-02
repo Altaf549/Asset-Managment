@@ -24,3 +24,11 @@ $routes->post('admin/employee/create', 'EmployeeController::createEmployee');
 $routes->post('admin/employee/update/(:num)', 'EmployeeController::updateEmployee/$1');
 $routes->post('admin/employee/toggle-status/(:num)', 'EmployeeController::toggleStatus/$1');
 $routes->delete('admin/employee/delete/(:num)', 'EmployeeController::deleteEmployee/$1');
+
+// Laptop Product routes
+$routes->get('admin/laptop/product', 'LaptopProductController::index');
+$routes->get('admin/laptop/product/getAllLaptopProducts', 'LaptopProductController::getAllLaptopProducts');
+$routes->get('admin/laptop/product/(:num)', 'LaptopProductController::getLaptopProduct/$1');
+$routes->post('admin/laptop/product/createLaptopProduct', 'LaptopProductController::createLaptopProduct');
+$routes->post('admin/laptop/product/updateLaptopProduct/(:num)', 'LaptopProductController::updateLaptopProduct/$1');
+$routes->delete('admin/laptop/product/deleteLaptopProduct/(:num)', 'LaptopProductController::deleteLaptopProduct/$1');
