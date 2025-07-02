@@ -78,9 +78,17 @@
             <div class="col-md-9 col-lg-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Laptop Product Management</h2>
-                    <button class="btn btn-primary" onclick="openCreateModal()">
-                        <i class="fas fa-plus"></i> Add Laptop
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary me-2" onclick="openCreateModal()">
+                            <i class="fas fa-plus"></i> Add Laptop
+                        </button>
+                        <button class="btn btn-success me-2" onclick="openAssignModal()">
+                            <i class="fas fa-user-plus"></i> Assign
+                        </button>
+                        <button class="btn btn-danger" onclick="openUnassignModal()">
+                            <i class="fas fa-user-minus"></i> Unassign
+                        </button>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -177,8 +185,8 @@
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" 
                                 id="status_${laptop.id}" 
-                                ${laptop.assign_status === 'assigned' ? 'checked' : ''}
-                                onclick="toggleStatus(${laptop.id})">
+                                ${laptop.assign_status === 'yes' ? 'checked' : ''}
+                                disabled>
                         </div>
                     `;
 
@@ -259,7 +267,7 @@
                 $('#assigned_to').val(response.assigned_to);
                 $('#emp_id').val(response.emp_id);
                 $('#assign_date').val(response.assign_date);
-                $('#assign_status').prop('checked', response.assign_status === 'assigned');
+                $('#assign_status').prop('checked', response.assign_status === 'yes');
                 $('#laptopModal').modal('show');
             }
         });
@@ -292,7 +300,7 @@
                 assigned_to: $('#assigned_to').val(),
                 emp_id: $('#emp_id').val(),
                 assign_date: $('#assign_date').val(),
-                assign_status: $('#assign_status').is(':checked') ? 'assigned' : 'unassigned'
+                assign_status: $('#assign_status').is(':checked') ? 'yes' : 'unassigned'
             },
             success: function(response) {
                 if (response.success) {
@@ -328,7 +336,7 @@
             url: '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id,
             method: 'POST',
             data: {
-                assign_status: $('#status_' + id).is(':checked') ? 'assigned' : 'unassigned'
+                assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
             },
             success: function(response) {
                 if (!response.success) {
