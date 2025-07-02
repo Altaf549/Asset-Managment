@@ -275,10 +275,11 @@
                     alert('Failed to load assets data');
                 }
             });
+            $('#assignModal').modal('show');
 
             // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('assignModal'));
-            modal.show();
+            // const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+            // modal.show();
         }
 
 
@@ -478,11 +479,6 @@
                 assign_status: assignStatus ? 'yes' : 'no'
             };
 
-            // Show loading
-            const modal = new bootstrap.Modal(document.getElementById('assignModal'));
-            $('#assignModal .modal-footer .btn-primary').prop('disabled', true);
-            $('#assignModal .modal-footer .btn-primary').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Assigning...');
-
             // Make AJAX call
             $.ajax({
                 url: '<?= base_url('admin/laptop/product/assignLaptop') ?>',
@@ -490,13 +486,8 @@
                 data: data,
                 success: function(response) {
                     if (response.success) {
-                        alert('Laptop assigned successfully!');
-                        // Reset form
+                        // Reset form and hide modal
                         $('#assignForm')[0].reset();
-                        // Hide modal using Bootstrap's Modal instance
-                        const modal = new bootstrap.Modal(document.getElementById('assignModal'));
-                        modal.hide();
-                        // Also trigger the hide event manually
                         $('#assignModal').modal('hide');
                         loadLaptops(); // Refresh the table
                     } else {
@@ -522,11 +513,6 @@
                         // Use default message if parsing fails
                     }
                     alert(errorMessage);
-                },
-                complete: function() {
-                    // Reset button
-                    $('#assignModal .modal-footer .btn-primary').prop('disabled', false);
-                    $('#assignModal .modal-footer .btn-primary').html('Assign');
                 }
             });
         }
