@@ -140,263 +140,264 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
-    let laptopTable;
-    let currentPage = 1;
-    let totalPages = 1;
-    let initialized = false;
+        let laptopTable;
+        let currentPage = 1;
+        let totalPages = 1;
+        let initialized = false;
 
-    $(document).ready(function() {
-        initializeTable();
-        loadLaptops();
-    });
-
-    function initializeTable() {
-        if (initialized) return;
-        
-        laptopTable = $('#laptopTable').DataTable({
-            pageLength: 10,
-            lengthChange: false,
-            searching: true,
-            ordering: true,
-            info: true,
-            paging: true,
-            scrollX: true,
-            scrollCollapse: true,
-            language: {
-                paginate: {
-                    previous: '<i class="fas fa-chevron-left">',
-                    next: '<i class="fas fa-chevron-right">'
-                }
-            },
-            initComplete: function() {
-                initialized = true;
-            }
+        $(document).ready(function() {
+            initializeTable();
+            loadLaptops();
         });
-    }
 
-    function openAssignModal() {
-        // Fetch employees data
-        $.ajax({
-            url: '<?= base_url('admin/employee/getAllEmployees') ?>',
-            method: 'GET',
-            success: function(response) {
-                const employeeSelect = $('#employeeName');
-                employeeSelect.empty();
-                employeeSelect.append('<option value="">Select Employee</option>');
-                response.data.forEach(employee => {
-                    if (employee.is_active === 'yes') {  // Double check active status
-                        employeeSelect.append(
+        function initializeTable() {
+            if (initialized) return;
+            
+            laptopTable = $('#laptopTable').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                searching: true,
+                ordering: true,
+                info: true,
+                paging: true,
+                scrollX: true,
+                scrollCollapse: true,
+                language: {
+                    paginate: {
+                        previous: '<i class="fas fa-chevron-left">',
+                        next: '<i class="fas fa-chevron-right">'
+                    }
+                },
+                initComplete: function() {
+                    initialized = true;
+                }
+            });
+        }
+
+        function openAssignModal() {
+            // Fetch employees data
+            $.ajax({
+                url: '<?= base_url('admin/employee/getAllEmployees') ?>',
+                method: 'GET',
+                success: function(response) {
+                    const employeeSelect = $('#employeeName');
+                    employeeSelect.empty();
+                    employeeSelect.append('<option value="">Select Employee</option>');
+                    response.data.forEach(employee => {
+                        if (employee.is_active === 'yes') {  // Double check active status
+                            employeeSelect.append(
+                                $('<option>', {
+                                    value: employee.id,
+                                    text: employee.emp_name
+                                })
+                            );
+                        }
+                    });
+                },
+                error: function() {
+                    alert('Failed to load employees data');
+                }
+            });
+            
+            // Fetch assets data
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
+                method: 'GET',
+                success: function(response) {
+                    const assetSelect = $('#assetId');
+                    assetSelect.empty();
+                    assetSelect.append('<option value="">Select Asset</option>');
+                    response.data.forEach(asset => {
+                        assetSelect.append(
                             $('<option>', {
-                                value: employee.id,
-                                text: employee.emp_name
+                                value: asset.id,
+                                text: asset.asset_id
                             })
                         );
-                    }
-                });
-            },
-            error: function() {
-                alert('Failed to load employees data');
-            }
-        });
-        
-        // Fetch assets data
-        $.ajax({
-            url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
-            method: 'GET',
-            success: function(response) {
-                const assetSelect = $('#assetId');
-                assetSelect.empty();
-                assetSelect.append('<option value="">Select Asset</option>');
-                response.data.forEach(asset => {
-                    assetSelect.append(
-                        $('<option>', {
-                            value: asset.id,
-                            text: asset.asset_id
-                        })
-                    );
-                });
-            },
-            error: function() {
-                alert('Failed to load assets data');
-            }
-        });
-        
-        $('#assignModal').modal('show');
-    }
-
-    function loadLaptops() {
-        $.ajax({
-            url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
-            method: 'GET',
-            success: function(response) {
-                laptopTable.clear();
-                response.data.forEach((laptop, index) => {
-                    const statusToggle = `
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" 
-                                id="status_${laptop.id}" 
-                                ${laptop.assign_status === 'yes' ? 'checked' : ''}
-                                disabled>
-                        </div>
-                    `;
-
-                    const actions = `
-                        <button class="btn btn-sm btn-warning me-2" 
-                            onclick="editLaptop(${laptop.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" 
-                            onclick="deleteLaptop(${laptop.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    `;
-
-                    laptopTable.row.add([
-                        index + 1,
-                        laptop.asset_id,
-                        laptop.serial_number,
-                        laptop.model_name,
-                        laptop.manufacturer,
-                        laptop.screen_size,
-                        laptop.ram,
-                        laptop.ram_model,
-                        laptop.ram_fsb,
-                        laptop.ssd,
-                        laptop.hard_disk,
-                        laptop.processor_company,
-                        laptop.processor,
-                        laptop.processor_generation,
-                        laptop.motherboard,
-                        laptop.motherboard_model,
-                        laptop.assigned_to,
-                        laptop.emp_id,
-                        formatDate(laptop.assign_date),
-                        statusToggle,
-                        formatDate(laptop.created_at),
-                        actions
-                    ]);
-                });
-                laptopTable.draw();
-            }
-        });
-    }
-
-    function formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString();
-    }
-
-    function openCreateModal() {
-        $('#laptopId').val('');
-        $('#laptopForm')[0].reset();
-        $('#laptopModal').modal('show');
-    }
-
-    function editLaptop(id) {
-        $.ajax({
-            url: '<?= base_url('admin/laptop/product/') ?>' + id,
-            method: 'GET',
-            success: function(response) {
-                $('#laptopId').val(response.id);
-                $('#asset_id').val(response.asset_id);
-                $('#serial_number').val(response.serial_number);
-                $('#model_name').val(response.model_name);
-                $('#manufacturer').val(response.manufacturer);
-                $('#screen_size').val(response.screen_size);
-                $('#ram').val(response.ram);
-                $('#ram_model').val(response.ram_model);
-                $('#ram_fsb').val(response.ram_fsb);
-                $('#ssd').val(response.ssd);
-                $('#hard_disk').val(response.hard_disk);
-                $('#processor_company').val(response.processor_company);
-                $('#processor').val(response.processor);
-                $('#processor_generation').val(response.processor_generation);
-                $('#motherboard').val(response.motherboard);
-                $('#motherboard_model').val(response.motherboard_model);
-                $('#assigned_to').val(response.assigned_to);
-                $('#emp_id').val(response.emp_id);
-                $('#assign_date').val(response.assign_date);
-                $('#assign_status').prop('checked', response.assign_status === 'yes');
-                $('#laptopModal').modal('show');
-            }
-        });
-    }
-
-    function saveLaptop() {
-        const id = $('#laptopId').val();
-        const url = id ? '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id : '<?= base_url('admin/laptop/product/createLaptopProduct') ?>';
-        const method = id ? 'POST' : 'POST';
-
-        $.ajax({
-            url: url,
-            method: method,
-            data: {
-                asset_id: $('#asset_id').val(),
-                serial_number: $('#serial_number').val(),
-                model_name: $('#model_name').val(),
-                manufacturer: $('#manufacturer').val(),
-                screen_size: $('#screen_size').val(),
-                ram: $('#ram').val(),
-                ram_model: $('#ram_model').val(),
-                ram_fsb: $('#ram_fsb').val(),
-                ssd: $('#ssd').val(),
-                hard_disk: $('#hard_disk').val(),
-                processor_company: $('#processor_company').val(),
-                processor: $('#processor').val(),
-                processor_generation: $('#processor_generation').val(),
-                motherboard: $('#motherboard').val(),
-                motherboard_model: $('#motherboard_model').val(),
-                assigned_to: $('#assigned_to').val(),
-                emp_id: $('#emp_id').val(),
-                assign_date: $('#assign_date').val(),
-                assign_status: $('#assign_status').is(':checked') ? 'yes' : 'unassigned'
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#laptopModal').modal('hide');
-                    loadLaptops();
-                    toastr.success('Laptop ' + (id ? 'updated' : 'created') + ' successfully');
-                } else {
-                    toastr.error(response.message);
+                    });
+                },
+                error: function() {
+                    alert('Failed to load assets data');
                 }
-            }
-        });
-    }
+            });
+            
+            $('#assignModal').modal('show');
+        }
 
-    function deleteLaptop(id) {
-        if (confirm('Are you sure you want to delete this laptop?')) {
+        function loadLaptops() {
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/deleteLaptopProduct/') ?>' + id,
-                method: 'DELETE',
+                url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
+                method: 'GET',
+                success: function(response) {
+                    laptopTable.clear();
+                    response.data.forEach((laptop, index) => {
+                        const statusToggle = `
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" 
+                                    id="status_${laptop.id}" 
+                                    ${laptop.assign_status === 'yes' ? 'checked' : ''}
+                                    disabled>
+                            </div>
+                        `;
+
+                        const actions = `
+                            <button class="btn btn-sm btn-warning me-2" 
+                                onclick="editLaptop(${laptop.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" 
+                                onclick="deleteLaptop(${laptop.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `;
+
+                        laptopTable.row.add([
+                            index + 1,
+                            laptop.asset_id,
+                            laptop.serial_number,
+                            laptop.model_name,
+                            laptop.manufacturer,
+                            laptop.screen_size,
+                            laptop.ram,
+                            laptop.ram_model,
+                            laptop.ram_fsb,
+                            laptop.ssd,
+                            laptop.hard_disk,
+                            laptop.processor_company,
+                            laptop.processor,
+                            laptop.processor_generation,
+                            laptop.motherboard,
+                            laptop.motherboard_model,
+                            laptop.assigned_to,
+                            laptop.emp_id,
+                            formatDate(laptop.assign_date),
+                            statusToggle,
+                            formatDate(laptop.created_at),
+                            actions
+                        ]);
+                    });
+                    laptopTable.draw();
+                }
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        function openCreateModal() {
+            $('#laptopId').val('');
+            $('#laptopForm')[0].reset();
+            $('#laptopModal').modal('show');
+        }
+
+        function editLaptop(id) {
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/') ?>' + id,
+                method: 'GET',
+                success: function(response) {
+                    $('#laptopId').val(response.id);
+                    $('#asset_id').val(response.asset_id);
+                    $('#serial_number').val(response.serial_number);
+                    $('#model_name').val(response.model_name);
+                    $('#manufacturer').val(response.manufacturer);
+                    $('#screen_size').val(response.screen_size);
+                    $('#ram').val(response.ram);
+                    $('#ram_model').val(response.ram_model);
+                    $('#ram_fsb').val(response.ram_fsb);
+                    $('#ssd').val(response.ssd);
+                    $('#hard_disk').val(response.hard_disk);
+                    $('#processor_company').val(response.processor_company);
+                    $('#processor').val(response.processor);
+                    $('#processor_generation').val(response.processor_generation);
+                    $('#motherboard').val(response.motherboard);
+                    $('#motherboard_model').val(response.motherboard_model);
+                    $('#assigned_to').val(response.assigned_to);
+                    $('#emp_id').val(response.emp_id);
+                    $('#assign_date').val(response.assign_date);
+                    $('#assign_status').prop('checked', response.assign_status === 'yes');
+                    $('#laptopModal').modal('show');
+                }
+            });
+        }
+
+        function saveLaptop() {
+            const id = $('#laptopId').val();
+            const url = id ? '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id : '<?= base_url('admin/laptop/product/createLaptopProduct') ?>';
+            const method = id ? 'POST' : 'POST';
+
+            $.ajax({
+                url: url,
+                method: method,
+                data: {
+                    asset_id: $('#asset_id').val(),
+                    serial_number: $('#serial_number').val(),
+                    model_name: $('#model_name').val(),
+                    manufacturer: $('#manufacturer').val(),
+                    screen_size: $('#screen_size').val(),
+                    ram: $('#ram').val(),
+                    ram_model: $('#ram_model').val(),
+                    ram_fsb: $('#ram_fsb').val(),
+                    ssd: $('#ssd').val(),
+                    hard_disk: $('#hard_disk').val(),
+                    processor_company: $('#processor_company').val(),
+                    processor: $('#processor').val(),
+                    processor_generation: $('#processor_generation').val(),
+                    motherboard: $('#motherboard').val(),
+                    motherboard_model: $('#motherboard_model').val(),
+                    assigned_to: $('#assigned_to').val(),
+                    emp_id: $('#emp_id').val(),
+                    assign_date: $('#assign_date').val(),
+                    assign_status: $('#assign_status').is(':checked') ? 'yes' : 'unassigned'
+                },
                 success: function(response) {
                     if (response.success) {
+                        $('#laptopModal').modal('hide');
                         loadLaptops();
-                        toastr.success('Laptop deleted successfully');
+                        toastr.success('Laptop ' + (id ? 'updated' : 'created') + ' successfully');
                     } else {
                         toastr.error(response.message);
                     }
                 }
             });
         }
-    }
 
-    function toggleStatus(id) {
-        $.ajax({
-            url: '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id,
-            method: 'POST',
-            data: {
-                assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
-            },
-            success: function(response) {
-                if (!response.success) {
-                    toastr.error(response.message);
-                    loadLaptops();
-                }
+        function deleteLaptop(id) {
+            if (confirm('Are you sure you want to delete this laptop?')) {
+                $.ajax({
+                    url: '<?= base_url('admin/laptop/product/deleteLaptopProduct/') ?>' + id,
+                    method: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            loadLaptops();
+                            toastr.success('Laptop deleted successfully');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    }
+                });
             }
-        });
-    }
+        }
+
+        function toggleStatus(id) {
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id,
+                method: 'POST',
+                data: {
+                    assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
+                },
+                success: function(response) {
+                    if (!response.success) {
+                        toastr.error(response.message);
+                        loadLaptops();
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
