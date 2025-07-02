@@ -157,6 +157,8 @@
         // Function to update employee ID field
         function updateEmployeeIdField(employeeId) {
             $('#employeeId').val(employeeId || '');
+            const selectedText = $('#employeeName option:selected').text();
+            $('#employeeNameText').val(selectedText);
         }
 
         // Initialize employee dropdown
@@ -452,6 +454,98 @@
                 }
             });
         }
+        function assignLaptop() {
+            // Validate all required fields
+            const employeeName = $('#employeeNameText').val();
+            const assetId = $('#assetId').val();
+            const assignDate = $('#assignDate').val();
+            const assignStatus = $('#assignStatus').is(':checked');
+
+            if (!employeeName || !assetId || !assignDate) {
+                alert('Please fill in all required fields:\n\n' +
+                    (!employeeName ? '• Employee Name\n' : '') +
+                    (!assetId ? '• Asset ID\n' : '') +
+                    (!assignDate ? '• Assign Date\n' : ''));
+                return;
+            }
+
+            // Prepare data
+            const data = {
+                employeeName: employeeName,
+                employee_id: $('#employeeId').val(),
+                asset_id: assetId,
+                assign_date: assignDate,
+                assign_status: assignStatus ? 'yes' : 'no'
+            };
+
+            // Show loading
+            const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+            $('#assignModal .modal-footer .btn-primary').prop('disabled', true);
+            $('#assignModal .modal-footer .btn-primary').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Assigning...');
+
+            // Make AJAX call
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/assignLaptop') ?>',
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    if (response.success) {
+                        alert('Laptop assigned successfully!');
+                        // Reset form
+                        $('#assignForm')[0].reset();
+                        // Hide modal using Bootstrap's Modal instance
+                        const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+                        modal.hide();
+                        // Also trigger the hide event manually
+                        $('#assignModal').modal('hide');
+                        loadLaptops(); // Refresh the table
+                    } else {
+                        let errorMessage = response.message || 'Failed to assign laptop';
+                        if (response.errors) {
+                            errorMessage = 'Validation errors:\n\n' + 
+                                Object.values(response.errors).join('\n');
+                        }
+                        alert(errorMessage);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = 'Error occurred while assigning laptop';
+                    try {
+                        const errorData = JSON.parse(xhr.responseText);
+                        if (errorData.message) {
+                            errorMessage = errorData.message;
+                        } else if (errorData.errors) {
+                            errorMessage = 'Validation errors:\n\n' + 
+                                Object.values(errorData.errors).join('\n');
+                        }
+                    } catch (e) {
+                        // Use default message if parsing fails
+                    }
+                    alert(errorMessage);
+                },
+                complete: function() {
+                    // Reset button
+                    $('#assignModal .modal-footer .btn-primary').prop('disabled', false);
+                    $('#assignModal .modal-footer .btn-primary').html('Assign');
+                }
+            });
+        }
+
+        // Initialize modal close handlers
+        $(document).ready(function() {
+            // Close button in footer
+            $('#assignModal .btn-secondary').on('click', function() {
+                $('#assignModal').modal('hide');
+                $('#assignForm')[0].reset();
+            });
+
+            // Cross button in header
+            $('#assignModal .btn-close').on('click', function() {
+                $('#assignModal').modal('hide');
+                $('#assignForm')[0].reset();
+            });
+        });
+
     </script>
 </body>
 </html>

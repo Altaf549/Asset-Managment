@@ -102,6 +102,39 @@ class LaptopProductController extends Controller
         ]);
     }
 
+    public function assignLaptop()
+    {
+        $rules = [
+            'employeeName' => 'required|string',
+            'employee_id' => 'required|integer',
+            'asset_id' => 'required|integer',
+            'assign_date' => 'required|valid_date',
+            'assign_status' => 'required|in_list[yes,no]'
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validation failed: ' . implode(', ', array_values($this->validator->getErrors()))
+            ]);
+        }
+
+        $data = [
+            'assigned_to' => $this->request->getPost('employeeName'),
+            'emp_id' => $this->request->getPost('employee_id'),
+            'assign_date' => $this->request->getPost('assign_date'),
+            'assign_status' => $this->request->getPost('assign_status')
+        ];
+
+        $assetId = $this->request->getPost('asset_id');
+        $result = $this->laptopProductModel->updateLaptopProduct($assetId, $data);
+        
+        return $this->response->setJSON([
+            'success' => $result !== false,
+            'message' => $result !== false ? 'Laptop assigned successfully' : 'Failed to assign laptop'
+        ]);
+    }
+
     public function deleteLaptopProduct($id)
     {
         $result = $this->laptopProductModel->delete($id);

@@ -13,6 +13,7 @@
                             <select class="form-select select2" id="employeeName" name="employeeName" required>
                                 <option value="">Select Employee</option>
                             </select>
+                            <input type="hidden" id="employeeNameText" name="employeeNameText">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="employeeId" class="form-label">Employee ID</label>
@@ -34,7 +35,7 @@
                     <div class="mb-3">
                         <label class="form-label">Assign Status</label>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="assignStatus" name="assignStatus" checked>
+                            <input class="form-check-input" type="checkbox" id="assignStatus" name="assignStatus" checked disabled>
                             <label class="form-check-label" for="assignStatus">Active</label>
                         </div>
                     </div>
