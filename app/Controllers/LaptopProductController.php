@@ -38,6 +38,16 @@ class LaptopProductController extends Controller
         ]);
     }
 
+    public function getAllUnassignLaptopProducts()
+    {
+        $search = $this->request->getVar('search');
+        $result = $this->laptopProductModel->getAllUnassignLaptopProducts($search);
+        return $this->response->setJSON([
+            'data' => $result['data'],
+            'totalRows' => $result['totalRows']
+        ]);
+    }
+
     public function createLaptopProduct()
     {
         $data = [

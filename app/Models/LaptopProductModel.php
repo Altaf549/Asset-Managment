@@ -97,6 +97,49 @@ class LaptopProductModel extends Model
         }
     }
 
+    public function getAllUnassignLaptopProducts($search = null)
+    {
+        try {
+            $builder = $this->builder();
+            
+            if ($search) {
+                $builder->groupStart()
+                    ->like('asset_id', $search)
+                    ->orLike('serial_number', $search)
+                    ->orLike('model_name', $search)
+                    ->orLike('manufacturer', $search)
+                    ->orLike('assigned_to', $search)
+                    ->groupEnd();
+            }
+            
+            $totalRows = $builder->countAllResults(false);
+            
+            $products = $builder
+                ->select('id, asset_id, serial_number, model_name, manufacturer, screen_size, ram, ram_model, ram_fsb, ssd, hard_disk, processor_company, processor, processor_generation, motherboard, motherboard_model, assigned_to, emp_id, assign_date, assign_status, created_at')
+                ->where('emp_id', null)
+                ->orderBy('created_at', 'DESC')
+                ->get()
+                ->getResultArray();
+
+            if (empty($products)) {
+                throw new \Exception('No products found');
+            }
+
+            return [
+                'data' => $products,
+                'totalRows' => $totalRows
+            ];
+        } catch (\Exception $e) {
+            log_message('error', 'Error in getAllLaptopProducts: ' . $e->getMessage());
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'data' => [],
+                'totalRows' => 0
+            ];
+        }
+    }
+
     public function createLaptopProduct($data)
     {
         return $this->insert($data);

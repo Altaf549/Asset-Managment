@@ -252,7 +252,7 @@
 
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
+                url: '<?= base_url('admin/laptop/product/getAllUnassignLaptopProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {

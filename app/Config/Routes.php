@@ -33,3 +33,4 @@ $routes->post('admin/laptop/product/createLaptopProduct', 'LaptopProductControll
 $routes->post('admin/laptop/product/updateLaptopProduct/(:num)', 'LaptopProductController::updateLaptopProduct/$1');
 $routes->delete('admin/laptop/product/deleteLaptopProduct/(:num)', 'LaptopProductController::deleteLaptopProduct/$1');
 $routes->post('admin/laptop/product/assignLaptop', 'LaptopProductController::assignLaptop');
+$routes->get('admin/laptop/product/getAllUnassignLaptopProducts', 'LaptopProductController::getAllUnassignLaptopProducts');
