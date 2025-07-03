@@ -40,3 +40,7 @@ $routes->post('admin/laptop/product/unassignLaptop', 'LaptopProductController::u
 // Assigned Laptops routes
 $routes->get('admin/laptop/assigned', 'LaptopAssignedController::index');
 $routes->get('admin/laptop/assigned/getAllAssignedLaptops', 'LaptopAssignedController::getAllAssignedLaptops');
+
+// Unassigned Laptops routes
+$routes->get('admin/laptop/unassigned', 'LaptopUnassignedController::index');
+$routes->get('admin/laptop/unassigned/getAllUnassignedLaptops', 'LaptopUnassignedController::getAllUnassignedLaptops');
