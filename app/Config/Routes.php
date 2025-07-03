@@ -36,3 +36,7 @@ $routes->post('admin/laptop/product/assignLaptop', 'LaptopProductController::ass
 $routes->get('admin/laptop/product/getAllUnassignLaptopProducts', 'LaptopProductController::getAllUnassignLaptopProducts');
 $routes->get('admin/laptop/product/getAllAssignLaptopProducts', 'LaptopProductController::getAllAssignLaptopProducts');
 $routes->post('admin/laptop/product/unassignLaptop', 'LaptopProductController::unassignLaptop');
+
+// Assigned Laptops routes
+$routes->get('admin/laptop/assigned', 'LaptopAssignedController::index');
+$routes->get('admin/laptop/assigned/getAllAssignedLaptops', 'LaptopAssignedController::getAllAssignedLaptops');
