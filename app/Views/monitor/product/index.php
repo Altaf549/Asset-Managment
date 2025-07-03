@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laptop Product Management - Shopping Admin</title>
+    <title>Monitor Product Management - Shopping Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= base_url('css/admin.css') ?>" rel="stylesheet">
@@ -74,13 +74,13 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?= view('admin/templates/sidebar', ['page' => 'laptop']) ?>
+            <?= view('admin/templates/sidebar', ['page' => 'monitor']) ?>
             <div class="col-md-9 col-lg-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Laptop Product Management</h2>
+                    <h2>Monitor Product Management</h2>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary me-2" onclick="openCreateModal()">
-                            <i class="fas fa-plus"></i> Add Laptop
+                            <i class="fas fa-plus"></i> Add Monitor
                         </button>
                         <button class="btn btn-success me-2" onclick="openAssignModal()">
                             <i class="fas fa-user-plus"></i> Assign
@@ -94,25 +94,15 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="laptopTable" class="table table-striped table-hover" style="width: 100%;">
+                            <table id="monitorTable" class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>SL No.</th>
                                     <th>Asset ID</th>
-                                    <th>Serial Number</th>
-                                    <th>Model Name</th>
                                     <th>Manufacturer</th>
                                     <th>Screen Size</th>
-                                    <th>RAM</th>
-                                    <th>RAM Model</th>
-                                    <th>RAM FSB</th>
-                                    <th>SSD</th>
-                                    <th>Hard Disk</th>
-                                    <th>Processor Company</th>
-                                    <th>Processor</th>
-                                    <th>Processor Generation</th>
-                                    <th>Motherboard</th>
-                                    <th>Motherboard Model</th>
+                                    <th>Resolution</th>
+                                    <th>Type</th>
                                     <th>Assigned To</th>
                                     <th>Emp ID</th>
                                     <th>Assign Date</th>
@@ -130,9 +120,9 @@
             </div>
         </div>
     </div>
-    <?= view('laptop/product/modal') ?>
-    <?= view('laptop/product/assign_modal') ?>
-    <?= view('laptop/product/unassign_modal') ?>
+    <?= view('monitor/product/modal') ?>
+    <?= view('monitor/product/assign_modal') ?>
+    <?= view('monitor/product/unassign_modal') ?>
 
     <!-- jQuery (before Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -149,7 +139,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        let laptopTable;
+        let monitorTable;
         let currentPage = 1;
         let totalPages = 1;
         let initialized = false;
@@ -193,13 +183,13 @@
 
         $(document).ready(function() {
             initializeTable();
-            loadLaptops();
+            loadMonitors();
         });
 
         function initializeTable() {
             if (initialized) return;
             
-            laptopTable = $('#laptopTable').DataTable({
+            monitorTable = $('#monitorTable').DataTable({
                 pageLength: 10,
                 lengthChange: false,
                 searching: true,
@@ -253,7 +243,7 @@
 
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/getAllUnassignLaptopProducts') ?>',
+                url: '<?= base_url('admin/monitor/product/getAllUnassignMonitorProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -284,59 +274,49 @@
         }
 
 
-        function loadLaptops() {
+        function loadMonitors() {
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/getAllLaptopProducts') ?>',
+                url: '<?= base_url('admin/monitor/product/getAllMonitorProducts') ?>',
                 method: 'GET',
                 success: function(response) {
-                    laptopTable.clear();
-                    response.data.forEach((laptop, index) => {
+                    monitorTable.clear();
+                    response.data.forEach((monitor, index) => {
                         const statusToggle = `
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" 
-                                    id="status_${laptop.id}" 
-                                    ${laptop.assign_status === 'yes' ? 'checked' : ''}
+                                    id="status_${monitor.id}" 
+                                    ${monitor.assign_status === 'yes' ? 'checked' : ''}
                                     disabled>
                             </div>
                         `;
 
                         const actions = `
                             <button class="btn btn-sm btn-warning me-2" 
-                                onclick="editLaptop(${laptop.id})">
+                                onclick="editMonitor(${monitor.id})">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" 
-                                onclick="deleteLaptop(${laptop.id})">
+                                onclick="deleteMonitor(${monitor.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         `;
 
-                        laptopTable.row.add([
+                        monitorTable.row.add([
                             index + 1,
-                            laptop.asset_id,
-                            laptop.serial_number,
-                            laptop.model_name,
-                            laptop.manufacturer,
-                            laptop.screen_size,
-                            laptop.ram,
-                            laptop.ram_model,
-                            laptop.ram_fsb,
-                            laptop.ssd,
-                            laptop.hard_disk,
-                            laptop.processor_company,
-                            laptop.processor,
-                            laptop.processor_generation,
-                            laptop.motherboard,
-                            laptop.motherboard_model,
-                            laptop.assigned_to,
-                            laptop.emp_id,
-                            formatDate(laptop.assign_date),
+                            monitor.asset_id || '',
+                            monitor.manufacturer || '',
+                            monitor.screen_size || '',
+                            monitor.resolution || '',
+                            monitor.type || '',
+                            monitor.assigned_to || '',
+                            monitor.emp_id || '',
+                            formatDate(monitor.assign_date),
                             statusToggle,
-                            formatDate(laptop.created_at),
+                            formatDate(monitor.created_at),
                             actions
                         ]);
                     });
-                    laptopTable.draw();
+                    monitorTable.draw();
                 }
             });
         }
@@ -348,65 +328,44 @@
         }
 
         function openCreateModal() {
-            $('#laptopId').val('');
-            $('#laptopForm')[0].reset();
-            $('#laptopModal').modal('show');
+            $('#monitorId').val('');
+            $('#monitorForm')[0].reset();
+            $('#monitorModal').modal('show');
         }
 
-        function editLaptop(id) {
+        function editMonitor(id) {
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/') ?>' + id,
+                url: '<?= base_url('admin/monitor/product/') ?>' + id,
                 method: 'GET',
                 success: function(response) {
-                    $('#laptopId').val(response.id);
+                    $('#monitorId').val(response.id);
                     $('#asset_id').val(response.asset_id);
-                    $('#serial_number').val(response.serial_number);
-                    $('#model_name').val(response.model_name);
                     $('#manufacturer').val(response.manufacturer);
                     $('#screen_size').val(response.screen_size);
-                    $('#ram').val(response.ram);
-                    $('#ram_model').val(response.ram_model);
-                    $('#ram_fsb').val(response.ram_fsb);
-                    $('#ssd').val(response.ssd);
-                    $('#hard_disk').val(response.hard_disk);
-                    $('#processor_company').val(response.processor_company);
-                    $('#processor').val(response.processor);
-                    $('#processor_generation').val(response.processor_generation);
-                    $('#motherboard').val(response.motherboard);
-                    $('#motherboard_model').val(response.motherboard_model);
+                    $('#resolution').val(response.resolution);
+                    $('#type').val(response.type);
                     $('#assigned_to').val(response.assigned_to);
                     $('#emp_id').val(response.emp_id);
                     $('#assign_date').val(response.assign_date);
                     $('#assign_status').prop('checked', response.assign_status === 'yes');
-                    $('#laptopModal').modal('show');
+                    $('#monitorModal').modal('show');
                 }
             });
         }
 
-        function saveLaptop() {
-            const id = $('#laptopId').val();
-            const url = id ? '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id : '<?= base_url('admin/laptop/product/createLaptopProduct') ?>';
+        function saveMonitor() {
+            const id = $('#monitorId').val();
+            const url = id ? '<?= base_url('admin/monitor/product/updateMonitorProduct/') ?>' + id : '<?= base_url('admin/monitor/product/createMonitorProduct') ?>';
             const method = id ? 'POST' : 'POST';
-
             $.ajax({
                 url: url,
                 method: method,
                 data: {
                     asset_id: $('#asset_id').val(),
-                    serial_number: $('#serial_number').val(),
-                    model_name: $('#model_name').val(),
                     manufacturer: $('#manufacturer').val(),
                     screen_size: $('#screen_size').val(),
-                    ram: $('#ram').val(),
-                    ram_model: $('#ram_model').val(),
-                    ram_fsb: $('#ram_fsb').val(),
-                    ssd: $('#ssd').val(),
-                    hard_disk: $('#hard_disk').val(),
-                    processor_company: $('#processor_company').val(),
-                    processor: $('#processor').val(),
-                    processor_generation: $('#processor_generation').val(),
-                    motherboard: $('#motherboard').val(),
-                    motherboard_model: $('#motherboard_model').val(),
+                    resolution: $('#resolution').val(),
+                    type: $('#type').val(),
                     assigned_to: $('#assigned_to').val(),
                     emp_id: $('#emp_id').val(),
                     assign_date: $('#assign_date').val(),
@@ -414,9 +373,9 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#laptopModal').modal('hide');
-                        loadLaptops();
-                        toastr.success('Laptop ' + (id ? 'updated' : 'created') + ' successfully');
+                        $('#monitorModal').modal('hide');
+                        loadMonitors();
+                        toastr.success('Monitor ' + (id ? 'updated' : 'created') + ' successfully');
                     } else {
                         toastr.error(response.message);
                     }
@@ -424,15 +383,15 @@
             });
         }
 
-        function deleteLaptop(id) {
-            if (confirm('Are you sure you want to delete this laptop?')) {
+        function deleteMonitor(id) {
+            if (confirm('Are you sure you want to delete this monitor?')) {
                 $.ajax({
-                    url: '<?= base_url('admin/laptop/product/deleteLaptopProduct/') ?>' + id,
+                    url: '<?= base_url('admin/monitor/product/deleteMonitorProduct/') ?>' + id,
                     method: 'DELETE',
                     success: function(response) {
                         if (response.success) {
-                            loadLaptops();
-                            toastr.success('Laptop deleted successfully');
+                            loadMonitors();
+                            toastr.success('Monitor deleted successfully');
                         } else {
                             toastr.error(response.message);
                         }
@@ -443,7 +402,7 @@
 
         function toggleStatus(id) {
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/updateLaptopProduct/') ?>' + id,
+                url: '<?= base_url('admin/monitor/product/updateMonitorProduct/') ?>' + id,
                 method: 'POST',
                 data: {
                     assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
@@ -451,12 +410,12 @@
                 success: function(response) {
                     if (!response.success) {
                         toastr.error(response.message);
-                        loadLaptops();
+                        loadMonitors();
                     }
                 }
             });
         }
-        function assignLaptop() {
+        function assignMonitor() {
             // Validate all required fields
             const employeeName = $('#employeeNameText').val();
             const assetId = $('#assetId').val();
@@ -482,7 +441,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/assignLaptop') ?>',
+                url: '<?= base_url('admin/monitor/product/assignMonitor') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -490,9 +449,9 @@
                         // Reset form and hide modal
                         $('#assignForm')[0].reset();
                         $('#assignModal').modal('hide');
-                        loadLaptops(); // Refresh the table
+                        loadMonitors(); // Refresh the table
                     } else {
-                        let errorMessage = response.message || 'Failed to assign laptop';
+                        let errorMessage = response.message || 'Failed to assign monitor';
                         if (response.errors) {
                             errorMessage = 'Validation errors:\n\n' + 
                                 Object.values(response.errors).join('\n');
@@ -501,7 +460,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    let errorMessage = 'Error occurred while assigning laptop';
+                    let errorMessage = 'Error occurred while assigning monitor';
                     try {
                         const errorData = JSON.parse(xhr.responseText);
                         if (errorData.message) {
@@ -532,7 +491,7 @@
             }
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/getAllAssignLaptopProducts') ?>',
+                url: '<?= base_url('admin/monitor/product/getAllAssignMonitorProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -569,8 +528,8 @@
             $('#unassignModal').modal('show');
         }
 
-        // Function to handle unassign laptop
-        function unassignLaptop() {
+        // Function to handle unassign monitor
+        function unassignMonitor() {
             const assetId = $('#unassignAssetId').val();
 
             if (!assetId) {
@@ -590,7 +549,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/laptop/product/unassignLaptop') ?>',
+                url: '<?= base_url('admin/monitor/product/unassignMonitor') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -598,7 +557,7 @@
                         // Reset form and hide modal
                         $('#unassignForm')[0].reset();
                         $('#unassignModal').modal('hide');
-                        loadLaptops(); // Refresh the table
+                        loadMonitors(); // Refresh the table
                     } else {
                         let errorMessage = response.message || 'Failed to unassign asset';
                         if (response.errors) {

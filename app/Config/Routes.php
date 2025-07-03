@@ -25,7 +25,7 @@ $routes->post('admin/employee/update/(:num)', 'EmployeeController::updateEmploye
 $routes->post('admin/employee/toggle-status/(:num)', 'EmployeeController::toggleStatus/$1');
 $routes->delete('admin/employee/delete/(:num)', 'EmployeeController::deleteEmployee/$1');
 
-// Laptop Product routes
+// Laptop routes
 $routes->get('admin/laptop/product', 'LaptopProductController::index');
 $routes->get('admin/laptop/product/getAllLaptopProducts', 'LaptopProductController::getAllLaptopProducts');
 $routes->get('admin/laptop/product/(:num)', 'LaptopProductController::getLaptopProduct/$1');
@@ -36,11 +36,23 @@ $routes->post('admin/laptop/product/assignLaptop', 'LaptopProductController::ass
 $routes->get('admin/laptop/product/getAllUnassignLaptopProducts', 'LaptopProductController::getAllUnassignLaptopProducts');
 $routes->get('admin/laptop/product/getAllAssignLaptopProducts', 'LaptopProductController::getAllAssignLaptopProducts');
 $routes->post('admin/laptop/product/unassignLaptop', 'LaptopProductController::unassignLaptop');
-
-// Assigned Laptops routes
 $routes->get('admin/laptop/assigned', 'LaptopAssignedController::index');
 $routes->get('admin/laptop/assigned/getAllAssignedLaptops', 'LaptopAssignedController::getAllAssignedLaptops');
-
-// Unassigned Laptops routes
 $routes->get('admin/laptop/unassigned', 'LaptopUnassignedController::index');
 $routes->get('admin/laptop/unassigned/getAllUnassignedLaptops', 'LaptopUnassignedController::getAllUnassignedLaptops');
+
+//Monitor routes
+$routes->get('admin/monitor/product', 'MonitorProductController::index');
+$routes->get('admin/monitor/product/getAllMonitorProducts', 'MonitorProductController::getAllMonitorProducts');
+$routes->get('admin/monitor/product/(:num)', 'MonitorProductController::getMonitorProduct/$1');
+$routes->post('admin/monitor/product/createMonitorProduct', 'MonitorProductController::createMonitorProduct');
+$routes->post('admin/monitor/product/updateMonitorProduct/(:num)', 'MonitorProductController::updateMonitorProduct/$1');
+$routes->delete('admin/monitor/product/deleteMonitorProduct/(:num)', 'MonitorProductController::deleteMonitorProduct/$1');
+$routes->post('admin/monitor/product/assignMonitor', 'MonitorProductController::assignMonitor');
+$routes->get('admin/monitor/product/getAllUnassignMonitorProducts', 'MonitorProductController::getAllUnassignMonitorProducts');
+$routes->get('admin/monitor/product/getAllAssignMonitorProducts', 'MonitorProductController::getAllAssignMonitorProducts');
+$routes->post('admin/monitor/product/unassignMonitor', 'MonitorProductController::unassignMonitor');
+$routes->get('admin/monitor/assigned', 'MonitorAssignedController::index');
+$routes->get('admin/monitor/assigned/getAllAssignedMonitors', 'MonitorAssignedController::getAllAssignedMonitors');
+$routes->get('admin/monitor/unassigned', 'MonitorUnassignedController::index');
+$routes->get('admin/monitor/unassigned/getAllUnassignedMonitors', 'MonitorUnassignedController::getAllUnassignedMonitors');
