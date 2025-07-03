@@ -132,6 +132,7 @@
     </div>
     <?= view('laptop/product/modal') ?>
     <?= view('laptop/product/assign_modal') ?>
+    <?= view('laptop/product/unassign_modal') ?>
 
     <!-- jQuery (before Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -517,20 +518,113 @@
             });
         }
 
-        // Initialize modal close handlers
-        $(document).ready(function() {
-            // Close button in footer
-            $('#assignModal .btn-secondary').on('click', function() {
-                $('#assignModal').modal('hide');
-                $('#assignForm')[0].reset();
-            });
+        // Function to open unassign modal
+        function openUnassignModal() {
+            const assetSelect = $('#unassignAssetId');
+            
+            assetSelect.empty().append('<option value="">Select Asset</option>');
 
-            // Cross button in header
-            $('#assignModal .btn-close').on('click', function() {
-                $('#assignModal').modal('hide');
-                $('#assignForm')[0].reset();
+            // Destroy Select2 if already initialized (to avoid duplicate UI)
+            if ($.fn.select2) {
+                if (assetSelect.hasClass("select2-hidden-accessible")) {
+                    assetSelect.select2('destroy');
+                }
+            }
+            // Fetch asset data
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/getAllAssignLaptopProducts') ?>',
+                method: 'GET',
+                success: function(response) {
+                    response.data.forEach(asset => {
+                        assetSelect.append(
+                            $('<option>', {
+                                value: asset.id,
+                                text: asset.asset_id,
+                                'data-emp_id': asset.emp_id,
+                                'data-emp_name': asset.assigned_to
+                            })
+                        );
+                    });
+
+                    // ✅ Initialize Select2 after data loaded
+                    assetSelect.select2({
+                        placeholder: "Select Asset",
+                        dropdownParent: $('#unassignModal'),
+                        width: '100%'
+                    });
+                    // Update employee ID when selection changes
+                    assetSelect.on('change', function() {
+                        var selected = $(this).find(':selected');
+
+                        var empName = selected.data('emp_name');
+                        var empId = selected.data('emp_id');
+                        $('#unassignEmployeeName').val(empName || '');
+                        $('#unassignEmployeeId').val(empId || '');
+                    });
+                },
+                error: function() {
+                    alert('Failed to load assets data');
+                }
             });
-        });
+            $('#unassignModal').modal('show');
+        }
+
+        // Function to handle unassign laptop
+        function unassignLaptop() {
+            const assetId = $('#unassignAssetId').val();
+
+            if (!assetId) {
+                alert('Please fill in all required fields:\n\n' +
+                    (!assetId ? '• Asset ID\n' : ''));
+                return;
+            }
+
+            if (!confirm('Are you sure you want to unassign this asset?')) {
+                return;
+            }
+
+            // Prepare data
+            const data = {
+                asset_id: assetId
+            };
+
+            // Make AJAX call
+            $.ajax({
+                url: '<?= base_url('admin/laptop/product/unassignLaptop') ?>',
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    if (response.success) {
+                        // Reset form and hide modal
+                        $('#unassignForm')[0].reset();
+                        $('#unassignModal').modal('hide');
+                        loadLaptops(); // Refresh the table
+                    } else {
+                        let errorMessage = response.message || 'Failed to unassign asset';
+                        if (response.errors) {
+                            errorMessage = 'Validation errors:\n\n' + 
+                                Object.values(response.errors).join('\n');
+                        }
+                        alert(errorMessage);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = 'Error occurred while unassigning asset';
+                    try {
+                        const errorData = JSON.parse(xhr.responseText);
+                        if (errorData.message) {
+                            errorMessage = errorData.message;
+                        } else if (errorData.errors) {
+                            errorMessage = 'Validation errors:\n\n' + 
+                                Object.values(errorData.errors).join('\n');
+                        }
+                    } catch (e) {
+                        // Use default message if parsing fails
+                    }
+                    alert(errorMessage);
+                }
+            });
+        }
 
     </script>
 </body>

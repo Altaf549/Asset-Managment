@@ -48,6 +48,16 @@ class LaptopProductController extends Controller
         ]);
     }
 
+    public function getAllAssignLaptopProducts()
+    {
+        $search = $this->request->getVar('search');
+        $result = $this->laptopProductModel->getAllAssignLaptopProducts($search);
+        return $this->response->setJSON([
+            'data' => $result['data'],
+            'totalRows' => $result['totalRows']
+        ]);
+    }
+
     public function createLaptopProduct()
     {
         $data = [
@@ -134,6 +144,35 @@ class LaptopProductController extends Controller
             'emp_id' => $this->request->getPost('employee_id'),
             'assign_date' => $this->request->getPost('assign_date'),
             'assign_status' => $this->request->getPost('assign_status')
+        ];
+
+        $assetId = $this->request->getPost('asset_id');
+        $result = $this->laptopProductModel->updateLaptopProduct($assetId, $data);
+        
+        return $this->response->setJSON([
+            'success' => $result !== false,
+            'message' => $result !== false ? 'Laptop assigned successfully' : 'Failed to assign laptop'
+        ]);
+    }
+
+    public function unassignLaptop()
+    {
+        $rules = [
+            'asset_id' => 'required|integer'
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validation failed: ' . implode(', ', array_values($this->validator->getErrors()))
+            ]);
+        }
+
+        $data = [
+            'assigned_to' => null,
+            'emp_id' => null,
+            'assign_date' => null,
+            'assign_status' => 'no'
         ];
 
         $assetId = $this->request->getPost('asset_id');
