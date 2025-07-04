@@ -7,22 +7,22 @@ use CodeIgniter\Controller;
 
 class KeyboardUnassignedController extends Controller
 {
-    protected $KeyboardProductModel;
+    protected $keyboardProductModel;
 
     public function __construct()
     {
-        $this->KeyboardProductModel = new KeyboardProductModel();
+        $this->keyboardProductModel = new KeyboardProductModel();
     }
 
     public function index()
     {
-        return view('Keyboard/unassigned/index');
+        return view('keyboard/unassigned/index');
     }
 
     public function getAllUnassignedKeyboards()
     {
         $search = $this->request->getVar('search');
-        $result = $this->KeyboardProductModel->getAllUnassignKeyboardProducts($search);
+        $result = $this->keyboardProductModel->getAllUnassignKeyboardProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']

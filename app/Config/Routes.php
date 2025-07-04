@@ -72,3 +72,19 @@ $routes->get('admin/keyboard/assigned', 'Keyboard\KeyboardAssignedController::in
 $routes->get('admin/keyboard/assigned/getAllAssignedKeyboards', 'Keyboard\KeyboardAssignedController::getAllAssignedKeyboards');
 $routes->get('admin/keyboard/unassigned', 'Keyboard\KeyboardUnassignedController::index');
 $routes->get('admin/keyboard/unassigned/getAllUnassignedKeyboards', 'Keyboard\KeyboardUnassignedController::getAllUnassignedKeyboards');
+
+//Mouse routes
+$routes->get('admin/mouse/product', 'Mouse\MouseProductController::index');
+$routes->get('admin/mouse/product/getAllMouseProducts', 'Mouse\MouseProductController::getAllMouseProducts');
+$routes->get('admin/mouse/product/(:num)', 'Mouse\MouseProductController::getMouseProduct/$1');
+$routes->post('admin/mouse/product/createMouseProduct', 'Mouse\MouseProductController::createMouseProduct');
+$routes->post('admin/mouse/product/updateMouseProduct/(:num)', 'Mouse\MouseProductController::updateMouseProduct/$1');
+$routes->delete('admin/mouse/product/deleteMouseProduct/(:num)', 'Mouse\MouseProductController::deleteMouseProduct/$1');
+$routes->post('admin/mouse/product/assignMouse', 'Mouse\MouseProductController::assignMouse');
+$routes->get('admin/mouse/product/getAllUnassignMouseProducts', 'Mouse\MouseProductController::getAllUnassignMouseProducts');
+$routes->get('admin/mouse/product/getAllAssignMouseProducts', 'Mouse\MouseProductController::getAllAssignMouseProducts');
+$routes->post('admin/mouse/product/unassignMouse', 'Mouse\MouseProductController::unassignMouse');
+$routes->get('admin/mouse/assigned', 'Mouse\MouseAssignedController::index');
+$routes->get('admin/mouse/assigned/getAllAssignedMouses', 'Mouse\MouseAssignedController::getAllAssignedMouses');
+$routes->get('admin/mouse/unassigned', 'Mouse\MouseUnassignedController::index');
+$routes->get('admin/mouse/unassigned/getAllUnassignedMouses', 'Mouse\MouseUnassignedController::getAllUnassignedMouses');
