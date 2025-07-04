@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CPU Product Management - Shopping Admin</title>
+    <title>MAC Product Management - Shopping Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= base_url('css/admin.css') ?>" rel="stylesheet">
@@ -74,13 +74,13 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?= view('admin/templates/sidebar', ['page' => 'cpu']) ?>
+            <?= view('admin/templates/sidebar', ['page' => 'mac']) ?>
             <div class="col-md-9 col-lg-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>CPU Product Management</h2>
+                    <h2>MAC Product Management</h2>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary me-2" onclick="openCreateModal()">
-                            <i class="fas fa-plus"></i> Add CPU
+                            <i class="fas fa-plus"></i> Add MAC
                         </button>
                         <button class="btn btn-success me-2" onclick="openAssignModal()">
                             <i class="fas fa-user-plus"></i> Assign
@@ -94,13 +94,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="cpuTable" class="table table-striped table-hover" style="width: 100%;">
+                            <table id="macTable" class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>SL No.</th>
                                     <th>Asset ID</th>
                                     <th>Cabinet Name</th>
-                                    <th>SMPS Name</th>
+                                    <th>Serial Number</th>
                                     <th>RAM</th>
                                     <th>RAM Model</th>
                                     <th>RAM FSB</th>
@@ -108,7 +108,6 @@
                                     <th>Hard Disk</th>
                                     <th>Processor Company</th>
                                     <th>Processor</th>
-                                    <th>Processor Generation</th>
                                     <th>Motherboard</th>
                                     <th>Motherboard Model</th>
                                     <th>Assigned To</th>
@@ -128,9 +127,9 @@
             </div>
         </div>
     </div>
-    <?= view('cpu/product/modal') ?>
-    <?= view('cpu/product/assign_modal') ?>
-    <?= view('cpu/product/unassign_modal') ?>
+    <?= view('mac/product/modal') ?>
+    <?= view('mac/product/assign_modal') ?>
+    <?= view('mac/product/unassign_modal') ?>
 
     <!-- jQuery (before Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -147,7 +146,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        let cpuTable;
+        let macTable;
         let currentPage = 1;
         let totalPages = 1;
         let initialized = false;
@@ -191,13 +190,13 @@
 
         $(document).ready(function() {
             initializeTable();
-            loadCPUs();
+            loadMACs();
         });
 
         function initializeTable() {
             if (initialized) return;
             
-            cpuTable = $('#cpuTable').DataTable({
+            macTable = $('#macTable').DataTable({
                 pageLength: 10,
                 lengthChange: false,
                 searching: true,
@@ -251,7 +250,7 @@
 
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/getAllUnassignCPUProducts') ?>',
+                url: '<?= base_url('admin/mac/product/getAllUnassignMACProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -282,57 +281,56 @@
         }
 
 
-        function loadCPUs() {
+        function loadMACs() {
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/getAllCPUProducts') ?>',
+                url: '<?= base_url('admin/mac/product/getAllMACProducts') ?>',
                 method: 'GET',
                 success: function(response) {
-                    cpuTable.clear();
-                    response.data.forEach((cpu, index) => {
+                    macTable.clear();
+                    response.data.forEach((mac, index) => {
                         const statusToggle = `
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" 
-                                    id="status_${cpu.id}" 
-                                    ${cpu.assign_status === 'yes' ? 'checked' : ''}
+                                    id="status_${mac.id}" 
+                                    ${mac.assign_status === 'yes' ? 'checked' : ''}
                                     disabled>
                             </div>
                         `;
 
                         const actions = `
                             <button class="btn btn-sm btn-warning me-2" 
-                                onclick="editCPU(${cpu.id})">
+                                onclick="editMAC(${mac.id})">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" 
-                                onclick="deleteCPU(${cpu.id})">
+                                onclick="deleteMAC(${mac.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         `;
 
-                        cpuTable.row.add([
+                        macTable.row.add([
                             index + 1,
-                            cpu.asset_id || '',
-                            cpu.cabinet_name || '',
-                            cpu.smps_name || '',
-                            cpu.ram || '',
-                            cpu.ram_model || '',
-                            cpu.ram_fsb || '',
-                            cpu.ssd || '',
-                            cpu.hard_disk || '',
-                            cpu.processor_company || '',
-                            cpu.processor || '',
-                            cpu.processor_generation || '',
-                            cpu.motherboard || '',
-                            cpu.motherboard_model || '',
-                            cpu.assigned_to || '',
-                            cpu.emp_id || '',
-                            formatDate(cpu.assign_date),
+                            mac.asset_id || '',
+                            mac.cabinet_name || '',
+                            mac.serial_number || '',
+                            mac.ram || '',
+                            mac.ram_model || '',
+                            mac.ram_fsb || '',
+                            mac.ssd || '',
+                            mac.hard_disk || '',
+                            mac.processor_company || '',
+                            mac.processor || '',
+                            mac.motherboard || '',
+                            mac.motherboard_model || '',
+                            mac.assigned_to || '',
+                            mac.emp_id || '',
+                            formatDate(mac.assign_date),
                             statusToggle,
-                            formatDate(cpu.created_at),
+                            formatDate(mac.created_at),
                             actions
                         ]);
                     });
-                    cpuTable.draw();
+                    macTable.draw();
                 }
             });
         }
@@ -344,19 +342,19 @@
         }
 
         function openCreateModal() {
-            $('#cpuId').val('');
-            $('#cpuForm')[0].reset();
-            $('#cpuModal').modal('show');
+            $('#macId').val('');
+            $('#macForm')[0].reset();
+            $('#macModal').modal('show');
         }
 
-        function editCPU(id) {
+        function editMAC(id) {
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/') ?>' + id,
+                url: '<?= base_url('admin/mac/product/') ?>' + id,
                 method: 'GET',
                 success: function(response) {
-                    $('#cpuId').val(response.id);
+                    $('#macId').val(response.id);
                     $('#cabinet_name').val(response.cabinet_name);
-                    $('#smps_name').val(response.smps_name);
+                    $('#serial_number').val(response.serial_number);
                     $('#screen_size').val(response.screen_size);
                     $('#ram').val(response.ram);
                     $('#ram_model').val(response.ram_model);
@@ -365,21 +363,20 @@
                     $('#hard_disk').val(response.hard_disk);
                     $('#processor_company').val(response.processor_company);
                     $('#processor').val(response.processor);
-                    $('#processor_generation').val(response.processor_generation);
                     $('#motherboard').val(response.motherboard);
                     $('#motherboard_model').val(response.motherboard_model);
                     $('#assigned_to').val(response.assigned_to);
                     $('#emp_id').val(response.emp_id);
                     $('#assign_date').val(response.assign_date);
                     $('#assign_status').prop('checked', response.assign_status === 'yes');
-                    $('#cpuModal').modal('show');
+                    $('#macModal').modal('show');
                 }
             });
         }
 
-        function saveCPU() {
-            const id = $('#cpuId').val();
-            const url = id ? '<?= base_url('admin/cpu/product/updateCPUProduct/') ?>' + id : '<?= base_url('admin/cpu/product/createCPUProduct') ?>';
+        function saveMAC() {
+            const id = $('#macId').val();
+            const url = id ? '<?= base_url('admin/mac/product/updateMACProduct/') ?>' + id : '<?= base_url('admin/mac/product/createMACProduct') ?>';
             const method = id ? 'POST' : 'POST';
 
             $.ajax({
@@ -388,7 +385,7 @@
                 data: {
                     asset_id: $('#asset_id').val(),
                     cabinet_name: $('#cabinet_name').val(),
-                    smps_name: $('#smps_name').val(),
+                    serial_number: $('#serial_number').val(),
                     ram: $('#ram').val(),
                     ram_model: $('#ram_model').val(),
                     ram_fsb: $('#ram_fsb').val(),
@@ -396,7 +393,6 @@
                     hard_disk: $('#hard_disk').val(),
                     processor_company: $('#processor_company').val(),
                     processor: $('#processor').val(),
-                    processor_generation: $('#processor_generation').val(),
                     motherboard: $('#motherboard').val(),
                     motherboard_model: $('#motherboard_model').val(),
                     assigned_to: $('#assigned_to').val(),
@@ -406,9 +402,9 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#cpuModal').modal('hide');
-                        loadCPUs();
-                        toastr.success('CPU ' + (id ? 'updated' : 'created') + ' successfully');
+                        $('#macModal').modal('hide');
+                        loadMACs();
+                        toastr.success('MAC ' + (id ? 'updated' : 'created') + ' successfully');
                     } else {
                         toastr.error(response.message);
                     }
@@ -416,15 +412,15 @@
             });
         }
 
-        function deleteCPU(id) {
-            if (confirm('Are you sure you want to delete this cpu?')) {
+        function deleteMAC(id) {
+            if (confirm('Are you sure you want to delete this mac?')) {
                 $.ajax({
-                    url: '<?= base_url('admin/cpu/product/deleteCPUProduct/') ?>' + id,
+                    url: '<?= base_url('admin/mac/product/deleteMACProduct/') ?>' + id,
                     method: 'DELETE',
                     success: function(response) {
                         if (response.success) {
-                            loadCPUs();
-                            toastr.success('CPU deleted successfully');
+                            loadMACs();
+                            toastr.success('MAC deleted successfully');
                         } else {
                             toastr.error(response.message);
                         }
@@ -435,7 +431,7 @@
 
         function toggleStatus(id) {
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/updateCPUProduct/') ?>' + id,
+                url: '<?= base_url('admin/mac/product/updateMACProduct/') ?>' + id,
                 method: 'POST',
                 data: {
                     assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
@@ -443,12 +439,12 @@
                 success: function(response) {
                     if (!response.success) {
                         toastr.error(response.message);
-                        loadCPUs();
+                        loadMACs();
                     }
                 }
             });
         }
-        function assignCPU() {
+        function assignMAC() {
             // Validate all required fields
             const employeeName = $('#employeeNameText').val();
             const assetId = $('#assetId').val();
@@ -474,7 +470,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/assignCPU') ?>',
+                url: '<?= base_url('admin/mac/product/assignMAC') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -482,9 +478,9 @@
                         // Reset form and hide modal
                         $('#assignForm')[0].reset();
                         $('#assignModal').modal('hide');
-                        loadCPUs(); // Refresh the table
+                        loadMACs(); // Refresh the table
                     } else {
-                        let errorMessage = response.message || 'Failed to assign cpu';
+                        let errorMessage = response.message || 'Failed to assign mac';
                         if (response.errors) {
                             errorMessage = 'Validation errors:\n\n' + 
                                 Object.values(response.errors).join('\n');
@@ -493,7 +489,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    let errorMessage = 'Error occurred while assigning cpu';
+                    let errorMessage = 'Error occurred while assigning mac';
                     try {
                         const errorData = JSON.parse(xhr.responseText);
                         if (errorData.message) {
@@ -524,7 +520,7 @@
             }
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/getAllAssignCPUProducts') ?>',
+                url: '<?= base_url('admin/mac/product/getAllAssignMACProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -561,8 +557,8 @@
             $('#unassignModal').modal('show');
         }
 
-        // Function to handle unassign cpu
-        function unassignCPU() {
+        // Function to handle unassign mac
+        function unassignMAC() {
             const assetId = $('#unassignAssetId').val();
 
             if (!assetId) {
@@ -582,7 +578,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/cpu/product/unassignCPU') ?>',
+                url: '<?= base_url('admin/mac/product/unassignMAC') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -590,7 +586,7 @@
                         // Reset form and hide modal
                         $('#unassignForm')[0].reset();
                         $('#unassignModal').modal('hide');
-                        loadCPUs(); // Refresh the table
+                        loadMACs(); // Refresh the table
                     } else {
                         let errorMessage = response.message || 'Failed to unassign asset';
                         if (response.errors) {

@@ -104,3 +104,19 @@ $routes->get('admin/cpu/assigned', 'CPU\CPUAssignedController::index');
 $routes->get('admin/cpu/assigned/getAllAssignedCPUs', 'CPU\CPUAssignedController::getAllAssignedCPUs');
 $routes->get('admin/cpu/unassigned', 'CPU\CPUUnassignedController::index');
 $routes->get('admin/cpu/unassigned/getAllUnassignedCPUs', 'CPU\CPUUnassignedController::getAllUnassignedCPUs');
+
+//MAC routes
+$routes->get('admin/mac/product', 'MAC\MACProductController::index');
+$routes->get('admin/mac/product/getAllMACProducts', 'MAC\MACProductController::getAllMACProducts');
+$routes->get('admin/mac/product/(:num)', 'MAC\MACProductController::getMACProduct/$1');
+$routes->post('admin/mac/product/createMACProduct', 'MAC\MACProductController::createMACProduct');
+$routes->post('admin/mac/product/updateMACProduct/(:num)', 'MAC\MACProductController::updateMACProduct/$1');
+$routes->delete('admin/mac/product/deleteMACProduct/(:num)', 'MAC\MACProductController::deleteMACProduct/$1');
+$routes->post('admin/mac/product/assignMAC', 'MAC\MACProductController::assignMAC');
+$routes->get('admin/mac/product/getAllUnassignMACProducts', 'MAC\MACProductController::getAllUnassignMACProducts');
+$routes->get('admin/mac/product/getAllAssignMACProducts', 'MAC\MACProductController::getAllAssignMACProducts');
+$routes->post('admin/mac/product/unassignMAC', 'MAC\MACProductController::unassignMAC');
+$routes->get('admin/mac/assigned', 'MAC\MACAssignedController::index');
+$routes->get('admin/mac/assigned/getAllAssignedMACs', 'MAC\MACAssignedController::getAllAssignedMACs');
+$routes->get('admin/mac/unassigned', 'MAC\MACUnassignedController::index');
+$routes->get('admin/mac/unassigned/getAllUnassignedMACs', 'MAC\MACUnassignedController::getAllUnassignedMACs');
