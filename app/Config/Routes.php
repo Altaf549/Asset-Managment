@@ -88,3 +88,19 @@ $routes->get('admin/mouse/assigned', 'Mouse\MouseAssignedController::index');
 $routes->get('admin/mouse/assigned/getAllAssignedMouses', 'Mouse\MouseAssignedController::getAllAssignedMouses');
 $routes->get('admin/mouse/unassigned', 'Mouse\MouseUnassignedController::index');
 $routes->get('admin/mouse/unassigned/getAllUnassignedMouses', 'Mouse\MouseUnassignedController::getAllUnassignedMouses');
+
+//CPU routes
+$routes->get('admin/cpu/product', 'CPU\CPUProductController::index');
+$routes->get('admin/cpu/product/getAllCPUProducts', 'CPU\CPUProductController::getAllCPUProducts');
+$routes->get('admin/cpu/product/(:num)', 'CPU\CPUProductController::getCPUProduct/$1');
+$routes->post('admin/cpu/product/createCPUProduct', 'CPU\CPUProductController::createCPUProduct');
+$routes->post('admin/cpu/product/updateCPUProduct/(:num)', 'CPU\CPUProductController::updateCPUProduct/$1');
+$routes->delete('admin/cpu/product/deleteCPUProduct/(:num)', 'CPU\CPUProductController::deleteCPUProduct/$1');
+$routes->post('admin/cpu/product/assignCPU', 'CPU\CPUProductController::assignCPU');
+$routes->get('admin/cpu/product/getAllUnassignCPUProducts', 'CPU\CPUProductController::getAllUnassignCPUProducts');
+$routes->get('admin/cpu/product/getAllAssignCPUProducts', 'CPU\CPUProductController::getAllAssignCPUProducts');
+$routes->post('admin/cpu/product/unassignCPU', 'CPU\CPUProductController::unassignCPU');
+$routes->get('admin/cpu/assigned', 'CPU\CPUAssignedController::index');
+$routes->get('admin/cpu/assigned/getAllAssignedCPUs', 'CPU\CPUAssignedController::getAllAssignedCPUs');
+$routes->get('admin/cpu/unassigned', 'CPU\CPUUnassignedController::index');
+$routes->get('admin/cpu/unassigned/getAllUnassignedCPUs', 'CPU\CPUUnassignedController::getAllUnassignedCPUs');
