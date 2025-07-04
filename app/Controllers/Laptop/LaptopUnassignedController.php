@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Laptop;
 
 use App\Models\LaptopProductModel;
 use CodeIgniter\Controller;
 
-class LaptopAssignedController extends Controller
+class LaptopUnassignedController extends Controller
 {
     protected $laptopProductModel;
 
@@ -16,13 +16,13 @@ class LaptopAssignedController extends Controller
 
     public function index()
     {
-        return view('laptop/assigned/index');
+        return view('laptop/unassigned/index');
     }
 
-    public function getAllAssignedLaptops()
+    public function getAllUnassignedLaptops()
     {
         $search = $this->request->getVar('search');
-        $result = $this->laptopProductModel->getAllAssignLaptopProducts($search);
+        $result = $this->laptopProductModel->getAllUnassignLaptopProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Laptop;
 
 use App\Models\LaptopProductModel;
 use CodeIgniter\Controller;

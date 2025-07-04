@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Monitor;
 
 use App\Models\MonitorProductModel;
 use CodeIgniter\Controller;
 
-class MonitorAssignedController extends Controller
+class MonitorUnassignedController extends Controller
 {
     protected $monitorProductModel;
 
@@ -16,13 +16,13 @@ class MonitorAssignedController extends Controller
 
     public function index()
     {
-        return view('monitor/assigned/index');
+        return view('monitor/unassigned/index');
     }
 
-    public function getAllAssignedMonitors()
+    public function getAllUnassignedMonitors()
     {
         $search = $this->request->getVar('search');
-        $result = $this->monitorProductModel->getAllAssignMonitorProducts($search);
+        $result = $this->monitorProductModel->getAllUnassignMonitorProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']

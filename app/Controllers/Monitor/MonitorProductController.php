@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Monitor;
 
 use App\Models\MonitorProductModel;
 use CodeIgniter\Controller;
