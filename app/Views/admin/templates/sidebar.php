@@ -37,7 +37,7 @@ $collapsiblePages = ['product', 'assigned', 'unassigned'];
                 'mac' => 'bi-apple',
                 'keyboard' => 'bi-keyboard',
                 'mouse' => 'bi-mouse',
-                'phones' => 'bi-phone',
+                'phone' => 'bi-phone',
                 default => 'bi-hdd-stack'
             };
         ?>
@@ -89,7 +89,7 @@ $collapsiblePages = ['product', 'assigned', 'unassigned'];
     overflow-y: auto;
     position: fixed;
     left: 0;
-    width: 250px;
+    width: 20%;
     padding: 1rem;
 }
 
