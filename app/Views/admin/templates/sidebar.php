@@ -7,7 +7,7 @@ $collapsibles = [
     'mac'      => 'MAC',
     'keyboard' => 'Keyboard',
     'mouse'    => 'Mouse',
-    'phones'   => 'Phones',
+    'phone'   => 'Phone',
 ];
 
 $collapsiblePages = ['product', 'assigned', 'unassigned'];

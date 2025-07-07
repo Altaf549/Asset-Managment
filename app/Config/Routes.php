@@ -120,3 +120,19 @@ $routes->get('admin/mac/assigned', 'MAC\MACAssignedController::index');
 $routes->get('admin/mac/assigned/getAllAssignedMACs', 'MAC\MACAssignedController::getAllAssignedMACs');
 $routes->get('admin/mac/unassigned', 'MAC\MACUnassignedController::index');
 $routes->get('admin/mac/unassigned/getAllUnassignedMACs', 'MAC\MACUnassignedController::getAllUnassignedMACs');
+
+//Phone routes
+$routes->get('admin/phone/product', 'Phone\PhoneProductController::index');
+$routes->get('admin/phone/product/getAllPhoneProducts', 'Phone\PhoneProductController::getAllPhoneProducts');
+$routes->get('admin/phone/product/(:num)', 'Phone\PhoneProductController::getPhoneProduct/$1');
+$routes->post('admin/phone/product/createPhoneProduct', 'Phone\PhoneProductController::createPhoneProduct');
+$routes->post('admin/phone/product/updatePhoneProduct/(:num)', 'Phone\PhoneProductController::updatePhoneProduct/$1');
+$routes->delete('admin/phone/product/deletePhoneProduct/(:num)', 'Phone\PhoneProductController::deletePhoneProduct/$1');
+$routes->post('admin/phone/product/assignPhone', 'Phone\PhoneProductController::assignPhone');
+$routes->get('admin/phone/product/getAllUnassignPhoneProducts', 'Phone\PhoneProductController::getAllUnassignPhoneProducts');
+$routes->get('admin/phone/product/getAllAssignPhoneProducts', 'Phone\PhoneProductController::getAllAssignPhoneProducts');
+$routes->post('admin/phone/product/unassignPhone', 'Phone\PhoneProductController::unassignPhone');
+$routes->get('admin/phone/assigned', 'Phone\PhoneAssignedController::index');
+$routes->get('admin/phone/assigned/getAllAssignedPhones', 'Phone\PhoneAssignedController::getAllAssignedPhones');
+$routes->get('admin/phone/unassigned', 'Phone\PhoneUnassignedController::index');
+$routes->get('admin/phone/unassigned/getAllUnassignedPhones', 'Phone\PhoneUnassignedController::getAllUnassignedPhones');

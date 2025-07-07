@@ -1,86 +1,82 @@
 <?php
 
-namespace App\Controllers\MAC;
+namespace App\Controllers\Phone;
 
-use App\Models\MACProductModel;
+use App\Models\PhoneProductModel;
 use CodeIgniter\Controller;
 
-class MACProductController extends Controller
+class PhoneProductController extends Controller
 {
-    protected $macProductModel;
+    protected $phoneProductModel;
 
     public function __construct()
     {
-        $this->macProductModel = new MACProductModel();
+        $this->phoneProductModel = new PhoneProductModel();
     }
 
     public function index()
     {
-        return view('mac/product/index');
+        return view('phone/product/index');
     }
 
-    public function getMACProduct($id)
+    public function getPhoneProduct($id)
     {
-        $product = $this->macProductModel->find($id);
+        $product = $this->phoneProductModel->find($id);
         if (!$product) {
             return $this->response->setStatusCode(404)->setJSON(['message' => 'Product not found']);
         }
         return $this->response->setJSON($product);
     }
 
-    public function getAllMACProducts()
+    public function getAllPhoneProducts()
     {
         $search = $this->request->getVar('search');
-        $result = $this->macProductModel->getAllMACProducts($search);
+        $result = $this->phoneProductModel->getAllPhoneProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']
         ]);
     }
 
-    public function getAllUnassignMACProducts()
+    public function getAllUnassignPhoneProducts()
     {
         $search = $this->request->getVar('search');
-        $result = $this->macProductModel->getAllUnassignMACProducts($search);
+        $result = $this->phoneProductModel->getAllUnassignPhoneProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']
         ]);
     }
 
-    public function getAllAssignMACProducts()
+    public function getAllAssignPhoneProducts()
     {
         $search = $this->request->getVar('search');
-        $result = $this->macProductModel->getAllAssignMACProducts($search);
+        $result = $this->phoneProductModel->getAllAssignPhoneProducts($search);
         return $this->response->setJSON([
             'data' => $result['data'],
             'totalRows' => $result['totalRows']
         ]);
     }
 
-    public function createMACProduct()
+    public function createPhoneProduct()
     {
         $data = [
             'asset_id' => $this->request->getPost('asset_id'),
-            'cabinet_name' => $this->request->getPost('cabinet_name'),
             'serial_number' => $this->request->getPost('serial_number'),
+            'model' => $this->request->getPost('model'),
+            'manufacturer' => $this->request->getPost('manufacturer'),
+            'screen_size' => $this->request->getPost('screen_size'),
             'ram' => $this->request->getPost('ram'),
-            'ram_model' => $this->request->getPost('ram_model'),
-            'ram_fsb' => $this->request->getPost('ram_fsb'),
-            'ssd' => $this->request->getPost('ssd'),
-            'hard_disk' => $this->request->getPost('hard_disk'),
-            'processor_company' => $this->request->getPost('processor_company'),
-            'processor' => $this->request->getPost('processor'),
-            'processor_generation' => $this->request->getPost('processor_generation'),
-            'motherboard' => $this->request->getPost('motherboard'),
-            'motherboard_model' => $this->request->getPost('motherboard_model'),
+            'storage' => $this->request->getPost('storage'),
+            'os' => $this->request->getPost('os'),
+            'device_type' => $this->request->getPost('device_type'),
             'assigned_to' => $this->request->getPost('assigned_to'),
             'emp_id' => $this->request->getPost('emp_id'),
             'assign_date' => $this->request->getPost('assign_date'),
             'assign_status' => $this->request->getPost('assign_status')
         ];
 
-        $result = $this->macProductModel->createMACProduct($data);
+        $result = $this->phoneProductModel->createPhoneProduct($data);
         
         return $this->response->setJSON([
             'success' => $result !== false,
@@ -88,29 +84,25 @@ class MACProductController extends Controller
         ]);
     }
 
-    public function updateMACProduct($id)
+    public function updatePhoneProduct($id)
     {
         $data = [
             'asset_id' => $this->request->getPost('asset_id'),
-            'cabinet_name' => $this->request->getPost('cabinet_name'),
             'serial_number' => $this->request->getPost('serial_number'),
+            'model' => $this->request->getPost('model'),
+            'manufacturer' => $this->request->getPost('manufacturer'),
+            'screen_size' => $this->request->getPost('screen_size'),
             'ram' => $this->request->getPost('ram'),
-            'ram_model' => $this->request->getPost('ram_model'),
-            'ram_fsb' => $this->request->getPost('ram_fsb'),
-            'ssd' => $this->request->getPost('ssd'),
-            'hard_disk' => $this->request->getPost('hard_disk'),
-            'processor_company' => $this->request->getPost('processor_company'),
-            'processor' => $this->request->getPost('processor'),
-            'processor_generation' => $this->request->getPost('processor_generation'),
-            'motherboard' => $this->request->getPost('motherboard'),
-            'motherboard_model' => $this->request->getPost('motherboard_model'),
+            'storage' => $this->request->getPost('storage'),
+            'os' => $this->request->getPost('os'),
+            'device_type' => $this->request->getPost('device_type'),
             'assigned_to' => $this->request->getPost('assigned_to'),
             'emp_id' => $this->request->getPost('emp_id'),
             'assign_date' => $this->request->getPost('assign_date'),
             'assign_status' => $this->request->getPost('assign_status')
         ];
 
-        $result = $this->macProductModel->updateMACProduct($id, $data);
+        $result = $this->phoneProductModel->updatePhoneProduct($id, $data);
         
         return $this->response->setJSON([
             'success' => $result !== false,
@@ -118,7 +110,7 @@ class MACProductController extends Controller
         ]);
     }
 
-    public function assignMAC()
+    public function assignPhone()
     {
         $rules = [
             'employeeName' => 'required|string',
@@ -143,15 +135,15 @@ class MACProductController extends Controller
         ];
 
         $assetId = $this->request->getPost('asset_id');
-        $result = $this->macProductModel->updateMACProduct($assetId, $data);
+        $result = $this->phoneProductModel->updatePhoneProduct($assetId, $data);
         
         return $this->response->setJSON([
             'success' => $result !== false,
-            'message' => $result !== false ? 'MAC assigned successfully' : 'Failed to assign mac'
+            'message' => $result !== false ? 'Phone assigned successfully' : 'Failed to assign phone'
         ]);
     }
 
-    public function unassignMAC()
+    public function unassignPhone()
     {
         $rules = [
             'asset_id' => 'required|integer'
@@ -172,17 +164,17 @@ class MACProductController extends Controller
         ];
 
         $assetId = $this->request->getPost('asset_id');
-        $result = $this->macProductModel->updateMACProduct($assetId, $data);
+        $result = $this->phoneProductModel->updatePhoneProduct($assetId, $data);
         
         return $this->response->setJSON([
             'success' => $result !== false,
-            'message' => $result !== false ? 'MAC assigned successfully' : 'Failed to assign mac'
+            'message' => $result !== false ? 'Phone assigned successfully' : 'Failed to assign phone'
         ]);
     }
 
-    public function deleteMACProduct($id)
+    public function deletePhoneProduct($id)
     {
-        $result = $this->macProductModel->delete($id);
+        $result = $this->phoneProductModel->delete($id);
         return $this->response->setJSON([
             'success' => $result !== false,
             'message' => $result !== false ? 'Product deleted successfully' : 'Failed to delete product'

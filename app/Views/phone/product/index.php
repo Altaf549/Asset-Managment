@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MAC Product Management - Shopping Admin</title>
+    <title>Phone Product Management - Shopping Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= base_url('css/admin.css') ?>" rel="stylesheet">
@@ -74,13 +74,13 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?= view('admin/templates/sidebar', ['page' => 'mac']) ?>
+            <?= view('admin/templates/sidebar', ['page' => 'phone']) ?>
             <div class="col-md-9 col-lg-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>MAC Product Management</h2>
+                    <h2>Phone Product Management</h2>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary me-2" onclick="openCreateModal()">
-                            <i class="fas fa-plus"></i> Add MAC
+                            <i class="fas fa-plus"></i> Add Phone
                         </button>
                         <button class="btn btn-success me-2" onclick="openAssignModal()">
                             <i class="fas fa-user-plus"></i> Assign
@@ -94,22 +94,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="macTable" class="table table-striped table-hover" style="width: 100%;">
+                            <table id="phoneTable" class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>SL No.</th>
                                     <th>Asset ID</th>
-                                    <th>Cabinet Name</th>
                                     <th>Serial Number</th>
-                                    <th>RAM</th>
-                                    <th>RAM Model</th>
-                                    <th>RAM FSB</th>
-                                    <th>SSD</th>
-                                    <th>Hard Disk</th>
-                                    <th>Processor Company</th>
-                                    <th>Processor</th>
-                                    <th>Motherboard</th>
-                                    <th>Motherboard Model</th>
+                                    <th>Model</th>
+                                    <th>Manufacturer</th>
+                                    <th>Screen Size</th>
+                                    <th>Ram</th>
+                                    <th>Storage</th>
+                                    <th>OS</th>
+                                    <th>Device Type</th>
                                     <th>Assigned To</th>
                                     <th>Emp ID</th>
                                     <th>Assign Date</th>
@@ -127,9 +124,9 @@
             </div>
         </div>
     </div>
-    <?= view('mac/product/modal') ?>
-    <?= view('mac/product/assign_modal') ?>
-    <?= view('mac/product/unassign_modal') ?>
+    <?= view('phone/product/modal') ?>
+    <?= view('phone/product/assign_modal') ?>
+    <?= view('phone/product/unassign_modal') ?>
 
     <!-- jQuery (before Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -146,7 +143,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        let macTable;
+        let phoneTable;
         let currentPage = 1;
         let totalPages = 1;
         let initialized = false;
@@ -190,13 +187,13 @@
 
         $(document).ready(function() {
             initializeTable();
-            loadMACs();
+            loadPhones();
         });
 
         function initializeTable() {
             if (initialized) return;
             
-            macTable = $('#macTable').DataTable({
+            phoneTable = $('#phoneTable').DataTable({
                 pageLength: 10,
                 lengthChange: false,
                 searching: true,
@@ -250,7 +247,7 @@
 
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/mac/product/getAllUnassignMACProducts') ?>',
+                url: '<?= base_url('admin/phone/product/getAllUnassignPhoneProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -281,56 +278,53 @@
         }
 
 
-        function loadMACs() {
+        function loadPhones() {
             $.ajax({
-                url: '<?= base_url('admin/mac/product/getAllMACProducts') ?>',
+                url: '<?= base_url('admin/phone/product/getAllPhoneProducts') ?>',
                 method: 'GET',
                 success: function(response) {
-                    macTable.clear();
-                    response.data.forEach((mac, index) => {
+                    phoneTable.clear();
+                    response.data.forEach((phone, index) => {
                         const statusToggle = `
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" 
-                                    id="status_${mac.id}" 
-                                    ${mac.assign_status === 'yes' ? 'checked' : ''}
+                                    id="status_${phone.id}" 
+                                    ${phone.assign_status === 'yes' ? 'checked' : ''}
                                     disabled>
                             </div>
                         `;
 
                         const actions = `
                             <button class="btn btn-sm btn-warning me-2" 
-                                onclick="editMAC(${mac.id})">
+                                onclick="editPhone(${phone.id})">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" 
-                                onclick="deleteMAC(${mac.id})">
+                                onclick="deletePhone(${phone.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         `;
 
-                        macTable.row.add([
+                        phoneTable.row.add([
                             index + 1,
-                            mac.asset_id || '',
-                            mac.cabinet_name || '',
-                            mac.serial_number || '',
-                            mac.ram || '',
-                            mac.ram_model || '',
-                            mac.ram_fsb || '',
-                            mac.ssd || '',
-                            mac.hard_disk || '',
-                            mac.processor_company || '',
-                            mac.processor || '',
-                            mac.motherboard || '',
-                            mac.motherboard_model || '',
-                            mac.assigned_to || '',
-                            mac.emp_id || '',
-                            formatDate(mac.assign_date),
+                            phone.asset_id || '',
+                            phone.serial_number || '',
+                            phone.model || '',
+                            phone.manufacturer || '',
+                            phone.screen_size || '',
+                            phone.ram || '',
+                            phone.storage || '',
+                            phone.os || '',
+                            phone.device_type || '',
+                            phone.assigned_to || '',
+                            phone.emp_id || '',
+                            formatDate(phone.assign_date),
                             statusToggle,
-                            formatDate(mac.created_at),
+                            formatDate(phone.created_at),
                             actions
                         ]);
                     });
-                    macTable.draw();
+                    phoneTable.draw();
                 }
             });
         }
@@ -342,42 +336,38 @@
         }
 
         function openCreateModal() {
-            $('#macId').val('');
-            $('#macForm')[0].reset();
-            $('#macModal').modal('show');
+            $('#phoneId').val('');
+            $('#phoneForm')[0].reset();
+            $('#phoneModal').modal('show');
         }
 
-        function editMAC(id) {
+        function editPhone(id) {
             $.ajax({
-                url: '<?= base_url('admin/mac/product/') ?>' + id,
+                url: '<?= base_url('admin/phone/product/') ?>' + id,
                 method: 'GET',
                 success: function(response) {
-                    $('#macId').val(response.id);
+                    $('#phoneId').val(response.id);
                     $('#asset_id').val(response.asset_id);
-                    $('#cabinet_name').val(response.cabinet_name);
                     $('#serial_number').val(response.serial_number);
+                    $('#model').val(response.model);
+                    $('#manufacturer').val(response.manufacturer);
                     $('#screen_size').val(response.screen_size);
                     $('#ram').val(response.ram);
-                    $('#ram_model').val(response.ram_model);
-                    $('#ram_fsb').val(response.ram_fsb);
-                    $('#ssd').val(response.ssd);
-                    $('#hard_disk').val(response.hard_disk);
-                    $('#processor_company').val(response.processor_company);
-                    $('#processor').val(response.processor);
-                    $('#motherboard').val(response.motherboard);
-                    $('#motherboard_model').val(response.motherboard_model);
+                    $('#storage').val(response.storage);
+                    $('#os').val(response.os);
+                    $('#device_type').val(response.device_type);
                     $('#assigned_to').val(response.assigned_to);
                     $('#emp_id').val(response.emp_id);
                     $('#assign_date').val(response.assign_date);
                     $('#assign_status').prop('checked', response.assign_status === 'yes');
-                    $('#macModal').modal('show');
+                    $('#phoneModal').modal('show');
                 }
             });
         }
 
-        function saveMAC() {
-            const id = $('#macId').val();
-            const url = id ? '<?= base_url('admin/mac/product/updateMACProduct/') ?>' + id : '<?= base_url('admin/mac/product/createMACProduct') ?>';
+        function savePhone() {
+            const id = $('#phoneId').val();
+            const url = id ? '<?= base_url('admin/phone/product/updatePhoneProduct/') ?>' + id : '<?= base_url('admin/phone/product/createPhoneProduct') ?>';
             const method = id ? 'POST' : 'POST';
 
             $.ajax({
@@ -385,17 +375,14 @@
                 method: method,
                 data: {
                     asset_id: $('#asset_id').val(),
-                    cabinet_name: $('#cabinet_name').val(),
                     serial_number: $('#serial_number').val(),
+                    model: $('#model').val(),
+                    manufacturer: $('#manufacturer').val(),
+                    screen_size: $('#screen_size').val(),
                     ram: $('#ram').val(),
-                    ram_model: $('#ram_model').val(),
-                    ram_fsb: $('#ram_fsb').val(),
-                    ssd: $('#ssd').val(),
-                    hard_disk: $('#hard_disk').val(),
-                    processor_company: $('#processor_company').val(),
-                    processor: $('#processor').val(),
-                    motherboard: $('#motherboard').val(),
-                    motherboard_model: $('#motherboard_model').val(),
+                    storage: $('#storage').val(),
+                    os: $('#os').val(),
+                    device_type: $('#device_type').val(),
                     assigned_to: $('#assigned_to').val(),
                     emp_id: $('#emp_id').val(),
                     assign_date: $('#assign_date').val(),
@@ -403,9 +390,9 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#macModal').modal('hide');
-                        loadMACs();
-                        toastr.success('MAC ' + (id ? 'updated' : 'created') + ' successfully');
+                        $('#phoneModal').modal('hide');
+                        loadPhones();
+                        toastr.success('Phone ' + (id ? 'updated' : 'created') + ' successfully');
                     } else {
                         toastr.error(response.message);
                     }
@@ -413,15 +400,15 @@
             });
         }
 
-        function deleteMAC(id) {
-            if (confirm('Are you sure you want to delete this mac?')) {
+        function deletePhone(id) {
+            if (confirm('Are you sure you want to delete this phone?')) {
                 $.ajax({
-                    url: '<?= base_url('admin/mac/product/deleteMACProduct/') ?>' + id,
+                    url: '<?= base_url('admin/phone/product/deletePhoneProduct/') ?>' + id,
                     method: 'DELETE',
                     success: function(response) {
                         if (response.success) {
-                            loadMACs();
-                            toastr.success('MAC deleted successfully');
+                            loadPhones();
+                            toastr.success('Phone deleted successfully');
                         } else {
                             toastr.error(response.message);
                         }
@@ -432,7 +419,7 @@
 
         function toggleStatus(id) {
             $.ajax({
-                url: '<?= base_url('admin/mac/product/updateMACProduct/') ?>' + id,
+                url: '<?= base_url('admin/phone/product/updatePhoneProduct/') ?>' + id,
                 method: 'POST',
                 data: {
                     assign_status: $('#status_' + id).is(':checked') ? 'yes' : 'no'
@@ -440,12 +427,12 @@
                 success: function(response) {
                     if (!response.success) {
                         toastr.error(response.message);
-                        loadMACs();
+                        loadPhones();
                     }
                 }
             });
         }
-        function assignMAC() {
+        function assignPhone() {
             // Validate all required fields
             const employeeName = $('#employeeNameText').val();
             const assetId = $('#assetId').val();
@@ -471,7 +458,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/mac/product/assignMAC') ?>',
+                url: '<?= base_url('admin/phone/product/assignPhone') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -479,9 +466,9 @@
                         // Reset form and hide modal
                         $('#assignForm')[0].reset();
                         $('#assignModal').modal('hide');
-                        loadMACs(); // Refresh the table
+                        loadPhones(); // Refresh the table
                     } else {
-                        let errorMessage = response.message || 'Failed to assign mac';
+                        let errorMessage = response.message || 'Failed to assign phone';
                         if (response.errors) {
                             errorMessage = 'Validation errors:\n\n' + 
                                 Object.values(response.errors).join('\n');
@@ -490,7 +477,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    let errorMessage = 'Error occurred while assigning mac';
+                    let errorMessage = 'Error occurred while assigning phone';
                     try {
                         const errorData = JSON.parse(xhr.responseText);
                         if (errorData.message) {
@@ -521,7 +508,7 @@
             }
             // Fetch asset data
             $.ajax({
-                url: '<?= base_url('admin/mac/product/getAllAssignMACProducts') ?>',
+                url: '<?= base_url('admin/phone/product/getAllAssignPhoneProducts') ?>',
                 method: 'GET',
                 success: function(response) {
                     response.data.forEach(asset => {
@@ -558,8 +545,8 @@
             $('#unassignModal').modal('show');
         }
 
-        // Function to handle unassign mac
-        function unassignMAC() {
+        // Function to handle unassign phone
+        function unassignPhone() {
             const assetId = $('#unassignAssetId').val();
 
             if (!assetId) {
@@ -579,7 +566,7 @@
 
             // Make AJAX call
             $.ajax({
-                url: '<?= base_url('admin/mac/product/unassignMAC') ?>',
+                url: '<?= base_url('admin/phone/product/unassignPhone') ?>',
                 method: 'POST',
                 data: data,
                 success: function(response) {
@@ -587,7 +574,7 @@
                         // Reset form and hide modal
                         $('#unassignForm')[0].reset();
                         $('#unassignModal').modal('hide');
-                        loadMACs(); // Refresh the table
+                        loadPhones(); // Refresh the table
                     } else {
                         let errorMessage = response.message || 'Failed to unassign asset';
                         if (response.errors) {
