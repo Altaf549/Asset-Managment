@@ -136,3 +136,11 @@ $routes->get('admin/phone/assigned', 'Phone\PhoneAssignedController::index');
 $routes->get('admin/phone/assigned/getAllAssignedPhones', 'Phone\PhoneAssignedController::getAllAssignedPhones');
 $routes->get('admin/phone/unassigned', 'Phone\PhoneUnassignedController::index');
 $routes->get('admin/phone/unassigned/getAllUnassignedPhones', 'Phone\PhoneUnassignedController::getAllUnassignedPhones');
+
+//Other Asset routes
+$routes->get('admin/other-asset', 'OtherAssetController::index');
+$routes->get('admin/other-asset/getAllOtherAsset', 'OtherAssetController::getAllOtherAsset');
+$routes->get('admin/other-asset/(:num)', 'OtherAssetController::getOtherAsset/$1');
+$routes->post('admin/other-asset/create', 'OtherAssetController::createOtherAsset');
+$routes->post('admin/other-asset/update/(:num)', 'OtherAssetController::updateOtherAsset/$1');
+$routes->delete('admin/other-asset/delete/(:num)', 'OtherAssetController::deleteOtherAsset/$1');
