@@ -16,7 +16,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost/asset-management-sheet/';
+    public string $baseURL = 'https://mole-maximum-fawn.ngrok-free.app/asset-management-sheet/public/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
