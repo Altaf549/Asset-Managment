@@ -57,8 +57,8 @@
                 <div class="main-content">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Dashboard</h2>
-                        <a href="#" class="btn btn-primary">
-                            <i class="bi bi-download"></i> Download Database
+                        <a href="<?= base_url('admin/dashboard/export') ?>" class="btn btn-primary">
+                            <i class="bi bi-download"></i> Export Database (CSV)
                         </a>
                     </div>
                     <div class="row">
