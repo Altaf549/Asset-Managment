@@ -13,8 +13,8 @@ $routes->post('/login/authenticate', 'Auth\Login::authenticate');
 $routes->get('admin/logout', 'Auth\Login::logout');
 
 // Admin routes
-
 $routes->get('admin/dashboard', 'Admin\Dashboard::index');
+$routes->get('admin/dashboard/export', 'Admin\Dashboard::exportToExcel');
 
 // Employee routes
 $routes->get('admin/employee', 'EmployeeController::index');
